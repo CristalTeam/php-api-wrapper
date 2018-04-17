@@ -1,0 +1,15 @@
+{
+  "name": "starif/php-api-wrapper",
+  "type": "package",
+  "authors": [
+    {
+      "name": "Cristal",
+      "email": "cristal@cpro.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Starif\\ApiWrapper\\": "src"
+    }
+  }
+}
