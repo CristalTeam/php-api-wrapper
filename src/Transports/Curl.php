@@ -25,12 +25,11 @@ class Curl implements TransportInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $jwt, string $entrypoint)
+    public function __construct(string $jwt, string $entrypoint, CurlClient $client)
     {
-        $this->client = new CurlClient;
+        $this->client = $client;
         $this->jwt = $jwt;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
-
         $this->client->setHeader('Authorization','Bearer '.$this->jwt);
     }
 
