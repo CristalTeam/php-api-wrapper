@@ -11,5 +11,8 @@
     "psr-4": {
       "Starif\\ApiWrapper\\": "src"
     }
+  },
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "2.*"
   }
 }

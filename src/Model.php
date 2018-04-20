@@ -2,13 +2,18 @@
 
 namespace Starif\ApiWrapper;
 
-abstract class Model
+use ArrayAccess;
+use Exception;
+use JsonSerializable;
+
+abstract class Model implements ArrayAccess, JsonSerializable
 {
+    /**
+     * The entity model's name on Api.
+     *
+     * @var string
+     */
     protected $entity;
-
-    protected $token;
-
-    protected $entrypoint;
 
     /**
      * The primary key for the model.
@@ -16,11 +21,6 @@ abstract class Model
      * @var string
      */
     protected $primaryKey = 'id';
-
-    /**
-     * @var TransportInterface
-     */
-    protected $transport;
 
     /**
      * @var Api
@@ -63,20 +63,18 @@ abstract class Model
     public $wasRecentlyCreated = false;
 
     /**
-     * @return string|null
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
      */
-    public function getEntrypoint(): ?string
-    {
-        return $this->entrypoint;
-    }
+    protected $dates = [];
 
     /**
-     * @return string|null
+     * The storage format of the model's date columns.
+     *
+     * @var string
      */
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
+    protected $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * @return Api
@@ -104,8 +102,7 @@ abstract class Model
 
     public function boot()
     {
-        $this->transport = new Transports\Curl($this->token, $this->entrypoint);
-        $this->api = new Api($this->transport);
+        //$this->api = new Api(/*...*/);
     }
 
     public static function find($id)
@@ -118,6 +115,11 @@ abstract class Model
         return new static($instance->getApi()->{'get'.ucfirst($instance->getEntity())}($id), true);
     }
 
+    /**
+     * @param      $field
+     * @param null $value
+     * @return self[]
+     */
     public static function where($field, $value = null)
     {
         if (!is_array($field)) {
@@ -130,9 +132,12 @@ abstract class Model
         }, $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($field));
     }
 
+    /**
+     * @return self[]
+     */
     public static function all()
     {
-        return self::where([]);
+        return static::where([]);
     }
 
     public static function create(array $attributes = [])
@@ -178,6 +183,13 @@ abstract class Model
      */
     public function setAttribute($key, $value)
     {
+        // If an attribute is listed as a "date", we'll convert it from a DateTime
+        // instance into a form proper for storage on the database tables using
+        // the connection grammar's date format. We will auto set the values.
+        if ($value && $this->isDateAttribute($key)) {
+            $value = $this->fromDateTime($value);
+        }
+
         $this->attributes[$key] = $value;
 
         return $this;
@@ -220,6 +232,124 @@ abstract class Model
     }
 
     /**
+     * Determine if an attribute or relation exists on the model.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
+     * Unset an attribute on the model.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function __unset($key)
+    {
+        $this->offsetUnset($key);
+    }
+
+    /**
+     * Convert the model to its string representation.
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Convert the model instance to JSON.
+     *
+     * @param  int $options
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function toJson($options = 0)
+    {
+        $json = json_encode($this->jsonSerialize(), $options);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \Exception($this, json_last_error_msg());
+        }
+
+        return $json;
+    }
+
+    /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->getAttributes();
+    }
+
+    /**
+     * Convert the object into something JSON serializable.
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return ! is_null($this->getAttribute($offset));
+    }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getAttribute($offset);
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->setAttribute($offset, $value);
+    }
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->attributes[$offset]);
+    }
+
+    /**
      * Get all of the current attributes on the model.
      *
      * @return array
@@ -238,7 +368,7 @@ abstract class Model
     public function getAttribute($key)
     {
         if (!$key) {
-            return;
+            return false;
         }
 
         // If the attribute exists in the attribute array or has a "get" mutator we will
@@ -249,13 +379,7 @@ abstract class Model
             return $this->getAttributeValue($key);
         }
 
-        // Here we will determine if the model base class itself contains this given key
-        // since we don't want to treat any of those methods as relationships because
-        // they are all intended as helper methods and none of these are relations.
-        if (method_exists(self::class, $key)) {
-            return;
-        }
-        return;
+        return null;
     }
 
 
@@ -271,6 +395,16 @@ abstract class Model
     }
 
     /**
+     * Get the value of the model's primary key.
+     *
+     * @return mixed
+     */
+    public function getKey()
+    {
+        return $this->getAttribute($this->getKeyName());
+    }
+
+    /**
      * Get the primary key for the model.
      *
      * @return string
@@ -278,6 +412,92 @@ abstract class Model
     public function getKeyName()
     {
         return $this->primaryKey;
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return $this->getKeyName();
+    }
+
+    /**
+     * Get the value of the model's route key.
+     *
+     * @return mixed
+     */
+    public function getRouteKey()
+    {
+        return $this->getAttribute($this->getRouteKeyName());
+    }
+
+    /**
+     * Get an attribute from the $attributes array.
+     *
+     * @param  string $key
+     * @return mixed
+     */
+    protected function getAttributeFromArray($key)
+    {
+        if (isset($this->attributes[$key])) {
+            return $this->attributes[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get a plain attribute (not a relationship).
+     *
+     * @param  string $key
+     * @return mixed
+     */
+    public function getAttributeValue($key)
+    {
+        $value = $this->getAttributeFromArray($key);
+
+        // If the attribute has a get mutator, we will call that then return what
+        // it returns as the value, which is useful for transforming values on
+        // retrieval from the model to a form that is more useful for usage.
+        if ($this->hasGetMutator($key)) {
+            return $this->mutateAttribute($key, $value);
+        }
+
+        // If the attribute is listed as a date, we will convert it to a DateTime
+        // instance on retrieval, which makes it quite convenient to work with
+        // date fields without having to create a mutator for each property.
+        if (in_array($key, $this->getDates()) &&
+            ! is_null($value)) {
+            return $this->asDateTime($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get the value of an attribute using its mutator.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @return mixed
+     */
+    protected function mutateAttribute($key, $value)
+    {
+        return $this->{'get'.self::studly($key).'Attribute'}($value);
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @return self|null
+     */
+    public function resolveRouteBinding($value)
+    {
+        return self::find($value);
     }
 
     /**
@@ -303,49 +523,85 @@ abstract class Model
         return method_exists($this, 'get'.self::studly($key).'Attribute');
     }
 
-    /**
-     * Get an attribute from the $attributes array.
-     *
-     * @param  string $key
-     * @return mixed
-     */
-    protected function getAttributeFromArray($key)
-    {
-        if (isset($this->attributes[$key])) {
-            return $this->attributes[$key];
-        }
-    }
 
     /**
-     * Get the value of an attribute using its mutator.
+     * Return a timestamp as DateTime object.
      *
-     * @param  string $key
      * @param  mixed  $value
-     * @return mixed
+     * @return \DateTime
      */
-    protected function mutateAttribute($key, $value)
+    protected function asDateTime($value)
     {
-        return $this->{'get'.self::studly($key).'Attribute'}($value);
+        // If this value is already a DataTimeInterface instance, we shall just return it as is.
+        if ($value instanceof \DateTimeInterface) {
+            return $value;
+        }
+
+        // If this value is an integer, we will assume it is a UNIX timestamp's value
+        // and format a Carbon object from this timestamp. This allows flexibility
+        // when defining your date fields as they might be UNIX timestamps here.
+        if (is_numeric($value)) {
+            return (new \DateTime)->setTimestamp($value);
+        }
+
+        // If the value is in simply year, month, day format, we will instantiate the
+        // Carbon instances from that format. Again, this provides for simple date
+        // fields on the database, while still supporting Carbonized conversion.
+        if ($this->isStandardDateFormat($value)) {
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $value.' 00:00:00');
+        }
+
+        // Finally, we will just assume this date is in the format used by default on
+        // the database connection and use that format to create the Carbon object
+        // that is returned back out to the developers after we convert it here.
+        return \DateTime::createFromFormat(
+            str_replace('.v', '.u', $this->getDateFormat()), $value
+        );
     }
 
     /**
-     * Get a plain attribute (not a relationship).
+     * Get the format for database stored dates.
      *
-     * @param  string $key
-     * @return mixed
+     * @return string
      */
-    public function getAttributeValue($key)
+    protected function getDateFormat()
     {
-        $value = $this->getAttributeFromArray($key);
+        return $this->dateFormat;
+    }
 
-        // If the attribute has a get mutator, we will call that then return what
-        // it returns as the value, which is useful for transforming values on
-        // retrieval from the model to a form that is more useful for usage.
-        if ($this->hasGetMutator($key)) {
-            return $this->mutateAttribute($key, $value);
-        }
+    /**
+     * Determine if the given value is a standard date format.
+     *
+     * @param  string  $value
+     * @return bool
+     */
+    protected function isStandardDateFormat($value)
+    {
+        return preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $value);
+    }
 
-        return $value;
+    /**
+     * Determine if the given attribute is a date or date castable.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    protected function isDateAttribute($key)
+    {
+        return in_array($key, $this->getDates());
+    }
+
+    /**
+     * Convert a DateTime to a storable string.
+     *
+     * @param  \DateTime|int  $value
+     * @return string
+     */
+    public function fromDateTime($value)
+    {
+        return empty($value) ? $value : $this->asDateTime($value)->format(
+            $this->getDateFormat()
+        );
     }
 
     /**
@@ -404,7 +660,7 @@ abstract class Model
         // immediately and not do anything else. Otherwise, we will continue with a
         // deletion process on the model, firing the proper events, and so forth.
         if (!$this->exists) {
-            return;
+            return false;
         }
 
         $this->performDeleteOnModel();
@@ -515,6 +771,16 @@ abstract class Model
     }
 
     /**
+     * Get the attributes that should be converted to dates.
+     *
+     * @return array
+     */
+    public function getDates()
+    {
+        return $this->dates;
+    }
+
+    /**
      * Determine if the new and old values for a given key are equivalent.
      *
      * @param  string $key
@@ -536,5 +802,4 @@ abstract class Model
         return is_numeric($current) && is_numeric($original)
             && strcmp((string) $current, (string) $original) === 0;
     }
-
 }
