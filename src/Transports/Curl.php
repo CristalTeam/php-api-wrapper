@@ -3,6 +3,7 @@
 namespace Starif\ApiWrapper\Transports;
 
 use Curl\Curl as CurlClient;
+use Starif\ApiWrapper\ApiException;
 use Starif\ApiWrapper\TransportInterface;
 
 class Curl implements TransportInterface
@@ -30,7 +31,7 @@ class Curl implements TransportInterface
         $this->client = $client;
         $this->jwt = $jwt;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
-        $this->client->setHeader('Authorization','Bearer '.$this->jwt);
+        $this->client->setHeader('Authorization', 'Bearer '.$this->jwt);
     }
 
     /**
@@ -60,13 +61,16 @@ class Curl implements TransportInterface
         }
 
         if (!($this->client->httpStatusCode >= 200 && $this->client->httpStatusCode <= 299)) {
-            throw new \Exception('La requête à l\'API a échoué, code HTTP ['.$this->client->httpStatusCode.'] : '.$this->client->rawResponse);
+            $response = json_decode($this->client->rawResponse, true);
+            if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
+                throw new \Exception($this->client->rawResponse);
+            }
+            throw new ApiException($response, $this->client->httpStatusCode);
         }
 
-        if(!$this->client->rawResponse){
+        if (!$this->client->rawResponse) {
             return [];
-        }
-        else{
+        } else {
             return json_decode($this->client->rawResponse, true);
         }
     }
