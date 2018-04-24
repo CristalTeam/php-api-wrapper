@@ -127,9 +127,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
         }
 
         $instance = new static;
+        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($field);
         return array_map(function ($entity) {
             return new static($entity, true);
-        }, $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($field));
+        }, $entities['data']);
     }
 
     /**
