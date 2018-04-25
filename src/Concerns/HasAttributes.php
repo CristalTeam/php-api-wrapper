@@ -2,6 +2,9 @@
 
 namespace Starif\ApiWrapper\Concerns;
 
+use LogicException;
+use Starif\ApiWrapper\Relation;
+
 trait HasAttributes
 {
     /**
@@ -116,9 +119,61 @@ trait HasAttributes
             return $this->getAttributeValue($key);
         }
 
-        return null;
+        // Here we will determine if the model base class itself contains this given key
+        // since we don't want to treat any of those methods as relationships because
+        // they are all intended as helper methods and none of these are relations.
+        if (method_exists(self::class, $key)) {
+            return;
+        }
+
+        return $this->getRelationValue($key);
     }
 
+
+    /**
+     * Get a relationship.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        // If the key already exists in the relationships array, it just means the
+        // relationship has already been loaded, so we'll just return it out of
+        // here because there is no need to query within the relations twice.
+        if ($this->relationLoaded($key)) {
+            return $this->relations[$key];
+        }
+
+        // If the "attribute" exists as a method on the model, we will just assume
+        // it is a relationship and will load and return results from the query
+        // and hydrate the relationship's value on the "relationships" array.
+        if (method_exists($this, $key)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+    }
+
+    /**
+     * Get a relationship value from a method.
+     *
+     * @param  string  $method
+     * @return mixed
+     *
+     * @throws \LogicException
+     */
+    protected function getRelationshipFromMethod($method)
+    {
+        $relation = $this->$method();
+
+        if (! $relation instanceof Relation) {
+            throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
+        }
+
+        $results = $relation->getResults();
+        $this->setRelation($method, $results);
+
+        return $results;
+    }
 
     /**
      * Get the model's original attribute values.

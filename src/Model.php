@@ -6,11 +6,13 @@ use ArrayAccess;
 use Exception;
 use JsonSerializable;
 use Starif\ApiWrapper\Concerns\HasAttributes;
+use Starif\ApiWrapper\Concerns\HasRelationships;
 
 abstract class Model implements ArrayAccess, JsonSerializable
 {
 
     use HasAttributes;
+    use HasRelationships;
 
     /**
      * The entity model's name on Api.
@@ -126,7 +128,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
     public function fill(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
-            $this->setAttribute($key, $value);
+            if(is_array($value) && method_exists($this, $key)){
+                $this->setRelation($key,
+                    $this->$key()->getRelationsFromArray($value)
+                );
+            }
+            else{
+                $this->setAttribute($key, $value);
+            }
         }
 
         return $this;
@@ -289,6 +298,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * @return string
      */
     public function getKeyName()
+    {
+        return $this->primaryKey;
+    }
+
+    /**
+     * Get the default foreign key name for the model.
+     *
+     * @return string
+     */
+    public function getForeignKey()
     {
         return $this->primaryKey;
     }
