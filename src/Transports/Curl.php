@@ -24,7 +24,11 @@ class Curl implements TransportInterface
     protected $client;
 
     /**
-     * {@inheritdoc}
+     * Curl constructor.
+     *
+     * @param string     $jwt
+     * @param string     $entrypoint
+     * @param CurlClient $client
      */
     public function __construct(string $jwt, string $entrypoint, CurlClient $client)
     {
@@ -65,6 +69,7 @@ class Curl implements TransportInterface
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
                 throw new \Exception($this->client->rawResponse);
             }
+
             throw new ApiException($response, $this->client->httpStatusCode);
         }
 
@@ -75,6 +80,13 @@ class Curl implements TransportInterface
         }
     }
 
+    /**
+     * Build URL with stored entrypoint, the endpoint and data queries.
+     *
+     * @param string $endpoint
+     * @param array  $data
+     * @return string
+     */
     protected function getUrl(string $endpoint, array $data = [])
     {
         $url = $this->entrypoint.ltrim($endpoint, '/');

@@ -9,113 +9,106 @@ class Api
      */
     private $transport;
 
+    /**
+     * Api constructor.
+     *
+     * @param TransportInterface $transport
+     */
     public function __construct(TransportInterface $transport)
     {
         $this->transport = $transport;
     }
 
+    /**
+     * Get current instance of TransportInterface.
+     *
+     * @return TransportInterface
+     */
     public function getTransport()
     {
         return $this->transport;
     }
 
-    public function getClients(array $filters = []): array
+    /**
+     * Magical use for getObjects(), getObject(), createObject(), updateObject(), deleteObject().
+     *
+     * @param $name
+     * @param $arguments
+     * @return array
+     */
+    public function __call($name, $arguments)
     {
-        return $this->transport->request('/clients', $filters);
+        preg_match('/^(get|create|update|delete)(\w+?)(s|)$/', $name, $matches);
+        $endpoint = strtolower($matches[2]);
+        if ($matches[1] === 'get') {
+            if ($matches[3] === 's') {
+                return $this->findAll($endpoint, ...$arguments);
+            } else {
+                return $this->findOne($endpoint, ...$arguments);
+            }
+        }
+
+        return $this->$matches[1]($endpoint, ...$arguments);
     }
 
-    public function getClient(int $id): array
+    /**
+     * Call API for find all results of the entrypoint.
+     *
+     * @param string $endpoint
+     * @param array  $filters
+     * @return array
+     */
+    protected function findAll(string $endpoint, array $filters = []): array
     {
-        return $this->transport->request('/client/'.$id);
+        return $this->transport->request('/'.$endpoint.'s', $filters);
     }
 
-    public function updateClient(int $id, $attributes): array
+    /**
+     * Call API for find entity of entrypoint.
+     *
+     * @param string $endpoint
+     * @param int    $id
+     * @return array
+     */
+    protected function findOne(string $endpoint, int $id): array
     {
-        return $this->transport->request('/client/'.$id, $attributes, 'put');
+        return $this->transport->request('/'.$endpoint.'/'.$id);
     }
 
-    public function createClient($attributes): array
+    /**
+     * Call API for update an entity.
+     *
+     * @param string $endpoint
+     * @param int    $id
+     * @param        $attributes
+     * @return array
+     */
+    protected function update(string $endpoint, int $id, $attributes): array
     {
-        return $this->transport->request('/client', $attributes, 'post');
+        return $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put');
     }
 
-    public function deleteClient(int $id): array
+    /**
+     * Call API for create an entity.
+     *
+     * @param string $endpoint
+     * @param        $attributes
+     * @return array
+     */
+    protected function create(string $endpoint, $attributes): array
     {
-        return $this->transport->request('/client/'.$id, [], 'delete');
+        return $this->transport->request('/'.$endpoint, $attributes, 'post');
     }
 
-    public function getCatalogues(array $filters = []): array
+    /**
+     * Call API for delete an entity.
+     *
+     * @param string $endpoint
+     * @param int    $id
+     * @return array
+     */
+    protected function delete(string $endpoint, int $id): array
     {
-        return $this->transport->request('/catalogues', $filters);
-    }
-
-    public function getCatalogue(int $id): array
-    {
-        return $this->transport->request('/catalogue/'.$id);
-    }
-
-    public function updateCatalogue(int $id, $attributes): array
-    {
-        return $this->transport->request('/catalogue/'.$id, $attributes, 'put');
-    }
-
-    public function createCatalogue($attributes): array
-    {
-        return $this->transport->request('/catalogue', $attributes, 'post');
-    }
-
-    public function deleteCatalogue(int $id): array
-    {
-        return $this->transport->request('/catalogue/'.$id, [], 'delete');
-    }
-
-    public function getTarifs(array $filters = []): array
-    {
-        return $this->transport->request('/tarifs', $filters);
-    }
-
-    public function getTarif(int $id): array
-    {
-        return $this->transport->request('/tarif/'.$id);
-    }
-
-    public function updateTarif(int $id, $attributes): array
-    {
-        return $this->transport->request('/tarif/'.$id, $attributes, 'put');
-    }
-
-    public function createTarif($attributes): array
-    {
-        return $this->transport->request('/tarif', $attributes, 'post');
-    }
-
-    public function deleteTarif(int $id): array
-    {
-        return $this->transport->request('/tarif/'.$id, [], 'delete');
-    }
-
-    public function getMateriels(array $filters = []): array
-    {
-        return $this->transport->request('/materiels', $filters);
-    }
-
-    public function getMateriel(int $id): array
-    {
-        return $this->transport->request('/materiel/'.$id);
-    }
-
-    public function updateMateriel(int $id, $attributes): array
-    {
-        return $this->transport->request('/materiel/'.$id, $attributes, 'put');
-    }
-
-    public function createMateriel($attributes): array
-    {
-        return $this->transport->request('/materiel', $attributes, 'post');
-    }
-
-    public function deleteMateriel(int $id): array
-    {
-        return $this->transport->request('/materiel/'.$id, [],'delete');
+        return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete');
     }
 }

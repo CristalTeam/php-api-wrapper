@@ -9,7 +9,7 @@ use Starif\ApiWrapper\Api;
 
 class ApiTest extends TestCase
 {
-    const ENDPOINTS = ['client', 'catalogue', 'materiel', 'tarif'];
+    const ENDPOINTS = ['client', 'catalogue', 'materiel', 'fabricant', 'type', 'tarif', 'caracteristique'];
     protected $token;
     protected $entrypoint;
 
