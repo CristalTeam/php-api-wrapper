@@ -36,6 +36,7 @@ class Curl implements TransportInterface
         $this->jwt = $jwt;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
         $this->client->setHeader('Authorization', 'Bearer '.$this->jwt);
+        $this->client->setHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -52,15 +53,15 @@ class Curl implements TransportInterface
                 break;
             case 'post':
                 $url = $this->getUrl($endpoint);
-                $this->client->post($url, $data);
+                $this->client->post($url, json_encode($data));
                 break;
             case 'put':
                 $url = $this->getUrl($endpoint);
-                $this->client->put($url, $data);
+                $this->client->put($url, json_encode($data));
                 break;
             case 'delete':
                 $url = $this->getUrl($endpoint);
-                $this->client->delete($url, $data);
+                $this->client->delete($url, json_encode($data));
                 break;
         }
 
@@ -74,9 +75,9 @@ class Curl implements TransportInterface
 
         if (!$this->client->rawResponse) {
             return [];
-        } else {
-            return json_decode($this->client->rawResponse, true);
         }
+
+        return json_decode($this->client->rawResponse, true);
     }
 
     /**

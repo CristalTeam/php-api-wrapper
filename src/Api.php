@@ -43,14 +43,19 @@ class Api
      */
     public function __call($name, $arguments)
     {
+        if (method_exists($this, $name)) {
+            return $this->$name(...$arguments);
+        }
+
         preg_match('/^(get|create|update|delete)([\w-]+?)(s|)$/', $name, $matches);
+
         $endpoint = strtolower($matches[2]);
         if ($matches[1] === 'get') {
             if ($matches[3] === 's') {
                 return $this->findAll($endpoint, ...$arguments);
-            } else {
-                return $this->findOne($endpoint, ...$arguments);
             }
+
+            return $this->findOne($endpoint, ...$arguments);
         }
 
         return $this->{$matches[1]}($endpoint, ...$arguments);
