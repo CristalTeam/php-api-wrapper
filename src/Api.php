@@ -2,6 +2,11 @@
 
 namespace Starif\ApiWrapper;
 
+/**
+ * Class Api
+ * @package Starif\ApiWrapper
+ * @throws ApiException
+ */
 class Api
 {
     /**
@@ -38,7 +43,7 @@ class Api
      */
     public function __call($name, $arguments)
     {
-        preg_match('/^(get|create|update|delete)(\w+?)(s|)$/', $name, $matches);
+        preg_match('/^(get|create|update|delete)([\w-]+?)(s|)$/', $name, $matches);
         $endpoint = strtolower($matches[2]);
         if ($matches[1] === 'get') {
             if ($matches[3] === 's') {
@@ -48,7 +53,7 @@ class Api
             }
         }
 
-        return $this->$matches[1]($endpoint, ...$arguments);
+        return $this->{$matches[1]}($endpoint, ...$arguments);
     }
 
     /**

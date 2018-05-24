@@ -69,7 +69,6 @@ class Curl implements TransportInterface
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
                 throw new \Exception($this->client->rawResponse);
             }
-
             throw new ApiException($response, $this->client->httpStatusCode);
         }
 
@@ -90,6 +89,6 @@ class Curl implements TransportInterface
     protected function getUrl(string $endpoint, array $data = [])
     {
         $url = $this->entrypoint.ltrim($endpoint, '/');
-        return (count($data)) ? $url.http_build_query($data) : $url;
+        return (count($data)) ? $url.'?'.http_build_query($data) : $url;
     }
 }

@@ -25,7 +25,7 @@ class HasMany extends Relation
      */
     public function getResults()
     {
-        return $this->related->where($this->foreignKey, $this->parent->{$this->foreignKey});
+        return $this->related->where($this->localKey, $this->parent->{$this->localKey});
     }
 
     /**

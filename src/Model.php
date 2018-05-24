@@ -359,6 +359,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * Save the model to the database.
      *
      * @return bool
+     * @throws ApiException
      */
     public function save()
     {
@@ -386,6 +387,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
         return $saved;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     * @throws ApiException
+     */
     public function update(array $attributes = [])
     {
         $this->fill($attributes)->save();
@@ -423,6 +429,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * Perform a model update operation.
      *
      * @return bool
+     * @throws ApiException
      */
     protected function performUpdate()
     {
