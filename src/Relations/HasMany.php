@@ -7,8 +7,8 @@ use Starif\ApiWrapper\Relation;
 
 class HasMany extends Relation
 {
-    private $foreignKey;
-    private $localKey;
+    protected $foreignKey;
+    protected $localKey;
 
     public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
     {
@@ -25,7 +25,7 @@ class HasMany extends Relation
      */
     public function getResults()
     {
-        return $this->related->where($this->localKey, $this->parent->{$this->localKey});
+        return $this->related->where($this->localKey, $this->parent->{$this->foreignKey});
     }
 
     /**
@@ -38,7 +38,7 @@ class HasMany extends Relation
     {
         $class = get_class($this->related);
         return array_map(function($item) use ($class){
-            return new $class($item, isset($item[$this->foreignKey]));
+            return new $class($item, isset($item[$this->localKey]));
         }, $data);
     }
 }

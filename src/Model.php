@@ -77,14 +77,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
         //$this->api = new Api(/*...*/);
     }
 
-    public static function find($id)
+    public static function find($field, $value = null)
     {
-        if (is_array($id)) {
-            return self::where(['id' => $id]);
+        if (is_array($field)) {
+            return self::where(['id' => $field]);
+        } elseif($value !== null){
+            return head(self::where([$field => $value]));
         }
 
         $instance = new static;
-        return new static($instance->getApi()->{'get'.ucfirst($instance->getEntity())}($id), true);
+        return new static($instance->getApi()->{'get'.ucfirst($instance->getEntity())}($field), true);
     }
 
     /**
@@ -113,9 +115,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
         return static::where([]);
     }
 
+    /**
+     * @param array $attributes
+     * @return static
+     * @throws ApiException
+     */
     public static function create(array $attributes = [])
     {
-        return (new static($attributes))->save();
+        $model = new static($attributes);
+        $model->save();
+        return $model;
     }
 
     /**
@@ -438,6 +447,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
         // models are updated, giving them a chance to do any special processing.
         $dirty = $this->getDirty();
 
+
         if (count($dirty) > 0) {
             $updatedField = $this->api->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
             $this->fill($updatedField);
@@ -456,7 +466,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
     protected function performInsert()
     {
         $attributes = $this->attributes;
-
         $updatedField = $this->api->{'create'.ucfirst($this->getEntity())}($attributes);
         $this->fill($updatedField);
         $this->exists = true;

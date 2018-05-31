@@ -72,7 +72,7 @@ trait HasRelationships
     {
         $instance = $this->newRelatedInstance($related);
 
-        $foreignKey = $foreignKey ?: $instance->getForeignKey();
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
 
         $localKey = $localKey ?: $this->getKeyName();
 
@@ -91,7 +91,7 @@ trait HasRelationships
     {
         $instance = $this->newRelatedInstance($related);
 
-        $foreignKey = $foreignKey ?: $instance->getForeignKey();
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
 
         $localKey = $localKey ?: $this->getKeyName();
 
