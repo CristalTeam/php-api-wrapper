@@ -82,7 +82,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
         if (is_array($field)) {
             return self::where(['id' => $field]);
         } elseif($value !== null){
-            return head(self::where([$field => $value]));
+            return head(self::where([$field => $value])) ?: null;
         }
 
         $instance = new static;
