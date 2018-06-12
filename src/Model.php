@@ -90,7 +90,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     protected static function bootMethods()
     {
         $class = static::class;
-        foreach (preg_grep('/^boot(\w+)/i', get_class_methods($class)) as $method) {
+        foreach (preg_grep('/^boot[A-Z](\w+)/i', get_class_methods($class)) as $method) {
             if ($method === __FUNCTION__) {
                 continue;
             }
