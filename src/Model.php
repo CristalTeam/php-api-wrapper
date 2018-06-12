@@ -72,16 +72,37 @@ abstract class Model implements ArrayAccess, JsonSerializable
         $this->boot();
     }
 
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
     public function boot()
     {
-        //$this->api = new Api(/*...*/);
+        static::bootMethods();
+    }
+
+    /**
+     * Boot all of the bootable traits on the model.
+     *
+     * @return void
+     */
+    protected static function bootMethods()
+    {
+        $class = static::class;
+        foreach (preg_grep('/^boot(\w+)/i', get_class_methods($class)) as $method) {
+            if ($method === __FUNCTION__) {
+                continue;
+            }
+            forward_static_call([$class, $method]);
+        }
     }
 
     public static function find($field, $value = null)
     {
         if (is_array($field)) {
             return self::where(['id' => $field]);
-        } elseif($value !== null){
+        } elseif ($value !== null) {
             return head(self::where([$field => $value])) ?: null;
         }
 
@@ -137,12 +158,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
     public function fill(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
-            if(is_array($value) && method_exists($this, $key)){
+            if (is_array($value) && method_exists($this, $key)) {
                 $this->setRelation($key,
                     $this->$key()->getRelationsFromArray($value)
                 );
-            }
-            else{
+            } else {
                 $this->setAttribute($key, $value);
             }
         }
@@ -176,7 +196,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Determine if an attribute or relation exists on the model.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function __isset($key)
@@ -187,7 +207,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Unset an attribute on the model.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return void
      */
     public function __unset($key)
@@ -249,18 +269,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Determine if the given attribute exists.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
      * @return bool
      */
     public function offsetExists($offset)
     {
-        return ! is_null($this->getAttribute($offset));
+        return !is_null($this->getAttribute($offset));
     }
 
     /**
      * Get the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
      * @return mixed
      */
     public function offsetGet($offset)
@@ -271,8 +291,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Set the value for a given offset.
      *
-     * @param  mixed  $offset
-     * @param  mixed  $value
+     * @param  mixed $offset
+     * @param  mixed $value
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -283,7 +303,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Unset the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param  mixed $offset
      * @return void
      */
     public function offsetUnset($offset)
@@ -344,7 +364,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Retrieve the model for a bound value.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return self|null
      */
     public function resolveRouteBinding($value)
