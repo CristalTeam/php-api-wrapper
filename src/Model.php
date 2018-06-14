@@ -98,44 +98,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
         }
     }
 
-    public static function find($field, $value = null)
-    {
-        if (is_array($field)) {
-            return self::where(['id' => $field]);
-        } elseif ($value !== null) {
-            return head(self::where([$field => $value])) ?: null;
-        }
-
-        $instance = new static;
-        return new static($instance->getApi()->{'get'.ucfirst($instance->getEntity())}($field), true);
-    }
-
-    /**
-     * @param      $field
-     * @param null $value
-     * @return self[]
-     */
-    public static function where($field, $value = null)
-    {
-        if (!is_array($field)) {
-            $field = [$field => $value];
-        }
-
-        $instance = new static;
-        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($field);
-        return array_map(function ($entity) {
-            return new static($entity, true);
-        }, $entities['data']);
-    }
-
-    /**
-     * @return self[]
-     */
-    public static function all()
-    {
-        return static::where([]);
-    }
-
     /**
      * @param array $attributes
      * @return static
@@ -168,6 +130,30 @@ abstract class Model implements ArrayAccess, JsonSerializable
         }
 
         return $this;
+    }
+
+    /**
+     * Handle dynamic method calls into the model.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        return $this->newQuery()->$method(...$parameters);
+    }
+
+    /**
+     * Handle dynamic static method calls into the method.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return (new static)->$method(...$parameters);
     }
 
     /**
@@ -369,7 +355,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function resolveRouteBinding($value)
     {
-        return self::find($value);
+        return $this->find($value);
     }
 
     /**
@@ -505,5 +491,59 @@ abstract class Model implements ArrayAccess, JsonSerializable
         $this->api->{'delete'.ucfirst($this->getEntity())}($this->{$this->primaryKey});
 
         $this->exists = false;
+    }
+
+    /**
+     * Get a new query builder for the model's table.
+     *
+     * @return Builder
+     */
+    public function newQuery()
+    {
+        return /*$this->registerGlobalScopes(*/$this->newQueryWithoutScopes()/*)*/;
+    }
+
+    /**
+     * Get a new query builder that doesn't have any global scopes.
+     *
+     * @return Builder|static
+     */
+    public function newQueryWithoutScopes()
+    {
+        $builder = $this->newBuilder();
+
+        // Once we have the query builders, we will set the model instances so the
+        // builder can easily access any information it may need from the model
+        // while it is constructing and executing various queries against it.
+        return $builder->setModel($this);
+    }
+
+    /**
+     * Create a new query builder for the model.
+     *
+     * @return  Builder
+     */
+    public function newBuilder()
+    {
+        return new Builder();
+    }
+
+    /**
+     * Create a new instance of the given model.
+     *
+     * @param  array  $attributes
+     * @param  bool  $exists
+     * @return static
+     */
+    public function newInstance($attributes = [], $exists = false)
+    {
+        // This method just provides a convenient way for us to generate fresh model
+        // instances of this current model. It is particularly useful during the
+        // hydration of new objects via the Eloquent query builder instances.
+        $model = new static((array) $attributes);
+
+        $model->exists = $exists;
+
+        return $model;
     }
 }
