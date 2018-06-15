@@ -6,6 +6,7 @@ use ArrayAccess;
 use Exception;
 use JsonSerializable;
 use Starif\ApiWrapper\Concerns\HasAttributes;
+use Starif\ApiWrapper\Concerns\hasGlobalScopes;
 use Starif\ApiWrapper\Concerns\HasRelationships;
 
 abstract class Model implements ArrayAccess, JsonSerializable
@@ -13,6 +14,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
     use HasAttributes;
     use HasRelationships;
+    use hasGlobalScopes;
 
     /**
      * The entity model's name on Api.
@@ -40,6 +42,12 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public $exists = false;
 
+    /**
+     * The array of global scopes on the model.
+     *
+     * @var array
+     */
+    protected static $globalScopes = [];
 
     /**
      * Indicates if the model was inserted during the current request lifecycle.
@@ -500,7 +508,22 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function newQuery()
     {
-        return /*$this->registerGlobalScopes(*/$this->newQueryWithoutScopes()/*)*/;
+        return $this->registerGlobalScopes($this->newQueryWithoutScopes());
+    }
+
+    /**
+     * Register the global scopes for this builder instance.
+     *
+     * @param  Builder  $builder
+     * @return Builder
+     */
+    public function registerGlobalScopes($builder)
+    {
+        foreach ($this->getGlobalScopes() as $identifier => $scope) {
+            $builder->withGlobalScope($identifier, $scope);
+        }
+
+        return $builder;
     }
 
     /**
@@ -537,9 +560,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function newInstance($attributes = [], $exists = false)
     {
-        // This method just provides a convenient way for us to generate fresh model
-        // instances of this current model. It is particularly useful during the
-        // hydration of new objects via the Eloquent query builder instances.
         $model = new static((array) $attributes);
 
         $model->exists = $exists;

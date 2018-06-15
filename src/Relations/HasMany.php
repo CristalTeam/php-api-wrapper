@@ -22,7 +22,6 @@ class HasMany extends Relation
         $this->related = $related;
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
-        $this->builder = $this->related->newBuilder();
     }
 
     /**
@@ -32,7 +31,7 @@ class HasMany extends Relation
      */
     public function getResults()
     {
-        return $this->builder->where($this->localKey, $this->parent->{$this->foreignKey})->get();
+        return $this->parent->where($this->localKey, $this->parent->{$this->foreignKey})->get();
     }
 
     /**

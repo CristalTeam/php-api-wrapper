@@ -27,6 +27,20 @@ class Builder
     }
 
     /**
+     * Applied global scopes.
+     *
+     * @var array
+     */
+    protected $scopes = [];
+
+    /**
+     * Removed global scopes.
+     *
+     * @var array
+     */
+    protected $removedScopes = [];
+
+    /**
      * Set a model instance for the model being queried.
      *
      * @param  Model  $model
@@ -87,6 +101,21 @@ class Builder
     }
 
     /**
+     * Register a new global scope.
+     *
+     * @param  string  $identifier
+     * @param  array  $scope
+     * @return $this
+     */
+    public function withGlobalScope($identifier, array $scope)
+    {
+        $this->scopes[$identifier] = $scope;
+        $this->where($scope);
+
+        return $this;
+    }
+
+    /**
      * Apply the given scope on the current builder instance.
      *
      * @param  array  $scope
@@ -95,7 +124,7 @@ class Builder
      */
     protected function callScope(array $scope, $parameters = [])
     {
-        $result = $this->where($scope);
+        $result = $scope[0]->{$scope[1]}($this);
 
         return $result;
     }
@@ -125,7 +154,7 @@ class Builder
      */
     public function get()
     {
-        $builder = $this; // $this->applyScopes();
+        $builder = $this;
 
         $instance = $this->getModel();
         $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($builder->getQuery());
