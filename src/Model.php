@@ -10,7 +10,6 @@ use Starif\ApiWrapper\Concerns\HasRelationships;
 
 abstract class Model implements ArrayAccess, JsonSerializable
 {
-
     use HasAttributes;
     use HasRelationships;
 
@@ -39,7 +38,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * @var bool
      */
     public $exists = false;
-
 
     /**
      * Indicates if the model was inserted during the current request lifecycle.
@@ -81,17 +79,19 @@ abstract class Model implements ArrayAccess, JsonSerializable
     {
         if (is_array($field)) {
             return self::where(['id' => $field]);
-        } elseif($value !== null){
+        } elseif ($value !== null) {
             return head(self::where([$field => $value])) ?: null;
         }
 
-        $instance = new static;
+        $instance = new static();
+
         return new static($instance->getApi()->{'get'.ucfirst($instance->getEntity())}($field), true);
     }
 
     /**
      * @param      $field
      * @param null $value
+     *
      * @return self[]
      */
     public static function where($field, $value = null)
@@ -100,8 +100,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
             $field = [$field => $value];
         }
 
-        $instance = new static;
+        $instance = new static();
         $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($field);
+
         return array_map(function ($entity) {
             return new static($entity, true);
         }, $entities['data']);
@@ -117,13 +118,16 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
     /**
      * @param array $attributes
+     *
      * @return static
+     *
      * @throws ApiException
      */
     public static function create(array $attributes = [])
     {
         $model = new static($attributes);
         $model->save();
+
         return $model;
     }
 
@@ -137,12 +141,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
     public function fill(array $attributes = [])
     {
         foreach ($attributes as $key => $value) {
-            if(is_array($value) && method_exists($this, $key)){
+            if (is_array($value) && method_exists($this, $key)) {
                 $this->setRelation($key,
                     $this->$key()->getRelationsFromArray($value)
                 );
-            }
-            else{
+            } else {
                 $this->setAttribute($key, $value);
             }
         }
@@ -153,7 +156,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Dynamically retrieve attributes on the model.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function __get($key)
@@ -164,8 +168,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Dynamically set attributes on the model.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function __set($key, $value)
@@ -176,7 +181,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Determine if an attribute or relation exists on the model.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return bool
      */
     public function __isset($key)
@@ -187,7 +193,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Unset an attribute on the model.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return void
      */
     public function __unset($key)
@@ -210,7 +217,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int $options
+     * @param int $options
+     *
      * @return string
      *
      * @throws \Exception
@@ -249,18 +257,20 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Determine if the given attribute exists.
      *
-     * @param  mixed  $offset
+     * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
     {
-        return ! is_null($this->getAttribute($offset));
+        return !is_null($this->getAttribute($offset));
     }
 
     /**
      * Get the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param mixed $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
@@ -271,8 +281,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Set the value for a given offset.
      *
-     * @param  mixed  $offset
-     * @param  mixed  $value
+     * @param mixed $offset
+     * @param mixed $value
+     *
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -283,7 +294,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Unset the value for a given offset.
      *
-     * @param  mixed  $offset
+     * @param mixed $offset
+     *
      * @return void
      */
     public function offsetUnset($offset)
@@ -344,7 +356,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Retrieve the model for a bound value.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return self|null
      */
     public function resolveRouteBinding($value)
@@ -355,12 +368,14 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Convert a value to studly caps case.
      *
-     * @param  string $value
+     * @param string $value
+     *
      * @return string
      */
     public static function studly($value)
     {
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
+
         return str_replace(' ', '', $value);
     }
 
@@ -368,6 +383,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * Save the model to the database.
      *
      * @return bool
+     *
      * @throws ApiException
      */
     public function save()
@@ -398,7 +414,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
     /**
      * @param array $attributes
+     *
      * @return $this
+     *
      * @throws ApiException
      */
     public function update(array $attributes = [])
@@ -407,7 +425,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
         return $this;
     }
-
 
     /**
      * Delete the model from the database.
@@ -438,6 +455,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * Perform a model update operation.
      *
      * @return bool
+     *
      * @throws ApiException
      */
     protected function performUpdate()
@@ -447,7 +465,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
         // models are updated, giving them a chance to do any special processing.
         $dirty = $this->getDirty();
 
-
         if (count($dirty) > 0) {
             $updatedField = $this->api->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
             $this->fill($updatedField);
@@ -456,7 +473,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
 
         return true;
     }
-
 
     /**
      * Perform a model insert operation.
@@ -470,7 +486,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
         $this->fill($updatedField);
         $this->exists = true;
         $this->wasRecentlyCreated = true;
-
 
         return true;
     }
