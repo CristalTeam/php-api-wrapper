@@ -31,30 +31,31 @@ class HasMany extends Relation
      */
     public function getResults()
     {
-        return $this->parent->where($this->localKey, $this->parent->{$this->foreignKey})->get();
+        return $this->related->where($this->localKey, $this->parent->{$this->foreignKey})->get();
     }
 
     /**
      * Get the models corresponding to data passed by array.
      *
      * @param $data
+     *
      * @return mixed
      */
     public function getRelationsFromArray($data)
     {
         $class = get_class($this->related);
-        return array_map(function($item) use ($class){
+
+        return array_map(function ($item) use ($class) {
             return new $class($item, isset($item[$this->localKey]));
         }, $data);
     }
 
-
-
     /**
      * Handle dynamic method calls to the relationship.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
@@ -67,5 +68,4 @@ class HasMany extends Relation
 
         return $result;
     }
-
 }
