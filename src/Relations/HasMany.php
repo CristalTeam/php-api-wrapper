@@ -2,6 +2,7 @@
 
 namespace Starif\ApiWrapper\Relations;
 
+use Starif\ApiWrapper\Builder;
 use Starif\ApiWrapper\Model;
 use Starif\ApiWrapper\Relation;
 
@@ -9,6 +10,11 @@ class HasMany extends Relation
 {
     protected $foreignKey;
     protected $localKey;
+
+    /**
+     * @var Builder
+     */
+    protected $builder;
 
     public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
     {
@@ -25,7 +31,7 @@ class HasMany extends Relation
      */
     public function getResults()
     {
-        return $this->related->where($this->localKey, $this->parent->{$this->foreignKey});
+        return $this->parent->where($this->localKey, $this->parent->{$this->foreignKey})->get();
     }
 
     /**
@@ -41,4 +47,25 @@ class HasMany extends Relation
             return new $class($item, isset($item[$this->localKey]));
         }, $data);
     }
+
+
+
+    /**
+     * Handle dynamic method calls to the relationship.
+     *
+     * @param  string  $method
+     * @param  array   $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        $result = $this->builder->{$method}(...$parameters);
+
+        if ($result === $this->builder) {
+            return $this;
+        }
+
+        return $result;
+    }
+
 }
