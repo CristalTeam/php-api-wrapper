@@ -80,9 +80,9 @@ class Api
      * @param int    $id
      * @return array
      */
-    protected function findOne(string $endpoint, int $id): array
+    protected function findOne(string $endpoint, int $id, array $filters = []): array
     {
-        return $this->transport->request('/'.$endpoint.'/'.$id);
+        return $this->transport->request('/'.$endpoint.'/'.$id, $filters);
     }
 
     /**

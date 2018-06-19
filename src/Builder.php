@@ -66,12 +66,14 @@ class Builder
     public function find($field, $value = null)
     {
         if (is_array($field)) {
-            return $this->where(['id' => $field])->get();
+            $this->query = array_merge($this->query, ['id' => $field]);
+            return $this->where($this->query)->get();
         } elseif ($value !== null) {
-            return $this->where([$field => $value])->get()[0] ?: null;
+            $this->query = array_merge($this->query, [$field => $value]);
+            return $this->where($this->query)->get()[0] ?: null;
         }
 
-        return $this->model->newInstance($this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field), true);
+        return $this->model->newInstance($this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->query), true);
     }
 
     /**
