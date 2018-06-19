@@ -3,8 +3,8 @@
 namespace Starif\ApiWrapper;
 
 /**
- * Class Api
- * @package Starif\ApiWrapper
+ * Class Api.
+ *
  * @throws ApiException
  */
 class Api
@@ -39,6 +39,7 @@ class Api
      *
      * @param $name
      * @param $arguments
+     *
      * @return array
      */
     public function __call($name, $arguments)
@@ -66,6 +67,7 @@ class Api
      *
      * @param string $endpoint
      * @param array  $filters
+     *
      * @return array
      */
     protected function findAll(string $endpoint, array $filters = []): array
@@ -78,6 +80,7 @@ class Api
      *
      * @param string $endpoint
      * @param int    $id
+     *
      * @return array
      */
     protected function findOne(string $endpoint, int $id, array $filters = []): array
@@ -91,6 +94,7 @@ class Api
      * @param string $endpoint
      * @param int    $id
      * @param        $attributes
+     *
      * @return array
      */
     protected function update(string $endpoint, int $id, $attributes): array
@@ -103,6 +107,7 @@ class Api
      *
      * @param string $endpoint
      * @param        $attributes
+     *
      * @return array
      */
     protected function create(string $endpoint, $attributes): array
@@ -115,6 +120,7 @@ class Api
      *
      * @param string $endpoint
      * @param int    $id
+     *
      * @return array
      */
     protected function delete(string $endpoint, int $id): array
