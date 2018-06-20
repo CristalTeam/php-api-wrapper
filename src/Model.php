@@ -467,6 +467,34 @@ abstract class Model implements ArrayAccess, JsonSerializable
     }
 
     /**
+     * Save the model and all of its relationships.
+     *
+     * @throws
+     * @return bool
+     */
+    public function push()
+    {
+        if (! $this->save()) {
+            return false;
+        }
+
+        // To sync all of the relationships to the database, we will simply spin through
+        // the relationships and save each model via this "push" method, which allows
+        // us to recurse into all of these nested relations for the model instance.
+        foreach ($this->relations as $models) {
+            $models = $models instanceof ArrayAccess ? $models : [$models];
+
+            foreach ($models as $model) {
+                if (! $model->push()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Perform a model update operation.
      *
      * @return bool
