@@ -99,7 +99,41 @@ class Builder
      */
     public function all()
     {
-        return $this->get();
+        return $this->where('limit', 9999)->get();
+    }
+
+    /**
+     * Alias to set the "limit" value of the query.
+     *
+     * @param  int  $value
+     * @return Builder|static
+     */
+    public function take($value)
+    {
+        return $this->limit($value);
+    }
+
+    /**
+     * Set the "limit" value of the query.
+     *
+     * @param  int  $value
+     * @return Builder|static
+     */
+    public function limit($value)
+    {
+        return $this->where('limit', $value);
+    }
+
+    /**
+     * Set the limit and offset for a given page.
+     *
+     * @param  int  $page
+     * @param  int  $perPage
+     * @return Builder|static
+     */
+    public function forPage($page, $perPage = 15)
+    {
+        return $this->where('page', $page)->take($perPage);
     }
 
     /**
