@@ -2,6 +2,8 @@
 
 namespace Starif\ApiWrapper;
 
+use Starif\ApiWrapper\Concerns\HasCache;
+
 /**
  * Class Api.
  *
@@ -9,6 +11,9 @@ namespace Starif\ApiWrapper;
  */
 class Api
 {
+
+    use HasCache;
+
     /**
      * @var TransportInterface
      */
@@ -72,7 +77,13 @@ class Api
      */
     protected function findAll(string $endpoint, array $filters = []): array
     {
-        return $this->transport->request('/'.$endpoint.'s', $filters);
+        $key = md5(__FUNCTION__.$endpoint.json_encode($filters));
+
+        if($this->hasCache($key)){
+            return $this->getCache($key);
+        }
+
+        return $this->setCache($key, $this->transport->request('/'.$endpoint.'s', $filters));
     }
 
     /**
@@ -80,12 +91,19 @@ class Api
      *
      * @param string $endpoint
      * @param int    $id
+     * @param array $filters
      *
      * @return array
      */
     protected function findOne(string $endpoint, int $id, array $filters = []): array
     {
-        return $this->transport->request('/'.$endpoint.'/'.$id, $filters);
+        $uri = '/'.$endpoint.'/'.$id;
+        $key = $uri.'?'.http_build_query($filters);
+        if($this->hasCache($key)){
+            return $this->getCache($key);
+        }
+
+        return $this->transport->request($uri, $filters);
     }
 
     /**
@@ -99,7 +117,9 @@ class Api
      */
     protected function update(string $endpoint, int $id, $attributes): array
     {
-        return $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put');
+        $key = $endpoint.'/'.$id.'?';
+
+        return $this->setCache($key, $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put'));
     }
 
     /**
@@ -125,6 +145,9 @@ class Api
      */
     protected function delete(string $endpoint, int $id): array
     {
+        $key = $endpoint.'/'.$id.'?';
+        $this->deleteCache($key);
+
         return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete');
     }
 }
