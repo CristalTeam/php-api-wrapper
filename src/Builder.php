@@ -43,7 +43,8 @@ class Builder
     /**
      * Set a model instance for the model being queried.
      *
-     * @param  Model  $model
+     * @param Model $model
+     *
      * @return $this
      */
     public function setModel(Model $model)
@@ -67,10 +68,12 @@ class Builder
     {
         if (is_array($field)) {
             $this->query = array_merge($this->query, ['id' => $field]);
+
             return $this->where($this->query)->get();
-        } elseif ($value !== null) {
+        } elseif (!is_int($field)) {
             $this->query = array_merge($this->query, [$field => $value]);
-            return $this->where($this->query)->get()[0] ?: null;
+
+            return $this->where($this->query)->get()[0] ?? null;
         }
 
         return $this->model->newInstance($this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->query), true);
@@ -81,6 +84,7 @@ class Builder
      *
      * @param      $field
      * @param null $value
+     *
      * @return self
      */
     public function where($field, $value = null)
@@ -105,7 +109,8 @@ class Builder
     /**
      * Alias to set the "limit" value of the query.
      *
-     * @param  int  $value
+     * @param int $value
+     *
      * @return Builder|static
      */
     public function take($value)
@@ -116,7 +121,8 @@ class Builder
     /**
      * Set the "limit" value of the query.
      *
-     * @param  int  $value
+     * @param int $value
+     *
      * @return Builder|static
      */
     public function limit($value)
@@ -127,8 +133,9 @@ class Builder
     /**
      * Set the limit and offset for a given page.
      *
-     * @param  int  $page
-     * @param  int  $perPage
+     * @param int $page
+     * @param int $perPage
+     *
      * @return Builder|static
      */
     public function forPage($page, $perPage = 15)
@@ -139,8 +146,9 @@ class Builder
     /**
      * Register a new global scope.
      *
-     * @param  string  $identifier
-     * @param  array  $scope
+     * @param string $identifier
+     * @param array  $scope
+     *
      * @return $this
      */
     public function withGlobalScope($identifier, array $scope)
@@ -154,8 +162,9 @@ class Builder
     /**
      * Apply the given scope on the current builder instance.
      *
-     * @param  array  $scope
-     * @param  array  $parameters
+     * @param array $scope
+     * @param array $parameters
+     *
      * @return mixed
      */
     protected function callScope(array $scope, $parameters = [])
@@ -168,8 +177,9 @@ class Builder
     /**
      * Dynamically handle calls into the query instance.
      *
-     * @param  string  $method
-     * @param  array  $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
@@ -194,6 +204,7 @@ class Builder
 
         $instance = $this->getModel();
         $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($builder->getQuery());
+
         return array_map(function ($entity) {
             return $this->model->newInstance($entity, true);
         }, $entities['data']);

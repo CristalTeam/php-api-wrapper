@@ -129,6 +129,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function fill(array $attributes = [])
     {
+        // start_measure('fill-model', 'Création de l\'objet '.static::class);
         foreach ($attributes as $key => $value) {
             if (is_array($value) && method_exists($this, $key)) {
                 $this->setRelation($key,
@@ -138,6 +139,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
                 $this->setAttribute($key, $value);
             }
         }
+        // stop_measure('fill-model');
 
         return $this;
     }
