@@ -188,7 +188,13 @@ class Builder
             return $this->callScope([$this->model, $scope], $parameters);
         }
 
-        $this->query->{$method}(...$parameters);
+        try {
+            $this->query->{$method}(...$parameters);
+        } catch (\Throwable $e) {
+            // Pour une raison qui m'échappe, PHP retourne une Fatal exception qui efface la stack d'exception
+            // si une erreur arrive... on re throw qqc de plus expressif
+            throw new \Exception($e->getMessage());
+        }
 
         return $this;
     }
