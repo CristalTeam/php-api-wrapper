@@ -75,13 +75,14 @@ class Builder
             $this->query = array_merge($this->query, ['id' => $field]);
 
             return $this->where($this->query)->get();
-        } elseif (!is_int($field) && $value !== null) {
+        } elseif (!is_int($field) && $value !== null && count($this->query)) {
             $this->query = array_merge($this->query, [$field => $value]);
 
             return $this->where($this->query)->get()[0] ?? null;
         }
 
-        return $this->model->newInstance($this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->query), true);
+            $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field);
+        return $this->model->newInstance($data, true);
     }
 
     /**

@@ -30,7 +30,7 @@ class HasOne extends Relation
      */
     public function getResults()
     {
-        return $this->builder->find($this->localKey, $this->parent->{$this->foreignKey});
+        return $this->builder->find($this->parent->{$this->foreignKey});
     }
 
     /**
@@ -40,7 +40,7 @@ class HasOne extends Relation
      */
     public function addConstraints()
     {
-        $this->builder = $this->related->newQuery();
+        $this->builder = $this->parent->newQuery();
     }
 
     /**
