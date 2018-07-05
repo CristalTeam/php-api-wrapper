@@ -70,7 +70,7 @@ class Builder
             $this->query = array_merge($this->query, ['id' => $field]);
 
             return $this->where($this->query)->get();
-        } elseif (!is_int($field)) {
+        } elseif (!is_int($field) && $value !== null) {
             $this->query = array_merge($this->query, [$field => $value]);
 
             return $this->where($this->query)->get()[0] ?? null;
