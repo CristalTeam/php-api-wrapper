@@ -64,6 +64,11 @@ class Builder
         return $this->model;
     }
 
+    public function first()
+    {
+        return $this->get()[0] ?? null;
+    }
+
     public function find($field, $value = null)
     {
         if (is_array($field)) {

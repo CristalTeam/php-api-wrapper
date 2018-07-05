@@ -11,10 +11,6 @@ class HasMany extends Relation
     protected $foreignKey;
     protected $localKey;
 
-    /**
-     * @var Builder
-     */
-    protected $builder;
 
     public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
     {
@@ -22,16 +18,18 @@ class HasMany extends Relation
         $this->related = $related;
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
+
+        $this->addConstraints();
     }
 
     /**
-     * Get the results of the relationship.
+     * Set the base constraints on the relation query.
      *
-     * @return mixed
+     * @return void
      */
-    public function getResults()
+    public function addConstraints()
     {
-        return $this->related->where($this->localKey, $this->parent->{$this->foreignKey})->get();
+        $this->builder = $this->related->where($this->localKey, $this->parent->{$this->foreignKey});
     }
 
     /**
@@ -48,24 +46,5 @@ class HasMany extends Relation
         return array_map(function ($item) use ($class) {
             return new $class($item, isset($item[$this->localKey]));
         }, $data);
-    }
-
-    /**
-     * Handle dynamic method calls to the relationship.
-     *
-     * @param string $method
-     * @param array  $parameters
-     *
-     * @return mixed
-     */
-    public function __call($method, $parameters)
-    {
-        $result = $this->builder->{$method}(...$parameters);
-
-        if ($result === $this->builder) {
-            return $this;
-        }
-
-        return $result;
     }
 }

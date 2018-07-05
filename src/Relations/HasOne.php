@@ -2,6 +2,7 @@
 
 namespace Starif\ApiWrapper\Relations;
 
+use Cristal\Modules\Tarif\Models\Caracteristique;
 use Starif\ApiWrapper\Model;
 use Starif\ApiWrapper\Relation;
 
@@ -18,6 +19,8 @@ class HasOne extends Relation
         $this->related = $related;
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
+
+        $this->addConstraints();
     }
 
     /**
@@ -27,7 +30,17 @@ class HasOne extends Relation
      */
     public function getResults()
     {
-        return $this->related->find($this->localKey, $this->parent->{$this->foreignKey});
+        return $this->builder->find($this->localKey, $this->parent->{$this->foreignKey});
+    }
+
+    /**
+     * Set the base constraints on the relation query.
+     *
+     * @return void
+     */
+    public function addConstraints()
+    {
+        $this->builder = $this->related->newQuery();
     }
 
     /**

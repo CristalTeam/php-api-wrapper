@@ -19,6 +19,11 @@ abstract class Relation
     protected $related;
 
     /**
+     * @var Builder
+     */
+    protected $builder;
+
+    /**
      * Create a new relation instance.
      *
      * @param  Model  $parent
@@ -34,7 +39,17 @@ abstract class Relation
      *
      * @return mixed
      */
-    abstract public function getResults();
+    public function getResults()
+    {
+        return $this->builder->get();
+    }
+
+    /**
+     * Set the base constraints on the relation query.
+     *
+     * @return void
+     */
+    abstract function addConstraints();
 
     /**
      * Get the models corresponding to data passed by array.
@@ -43,4 +58,22 @@ abstract class Relation
      * @return mixed
      */
     abstract function getRelationsFromArray($data);
+
+    /**
+     * Handle dynamic method calls to the relationship.
+     *
+     * @param  string  $method
+     * @param  array   $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        $result = $this->builder->{$method}(...$parameters);
+
+        if ($result === $this->builder) {
+            return $this;
+        }
+
+        return $result;
+    }
 }

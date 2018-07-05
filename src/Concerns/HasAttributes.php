@@ -188,7 +188,7 @@ trait HasAttributes
         if (! $relation instanceof Relation) {
             throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
         }
-
+        $relation->addConstraints();
         $results = $relation->getResults();
         $this->setRelation($method, $results);
 

@@ -2,6 +2,7 @@
 
 namespace Starif\ApiWrapper\Concerns;
 
+use Starif\ApiWrapper\Relations\BelongsTo;
 use Starif\ApiWrapper\Relations\HasOne;
 use Starif\ApiWrapper\Relations\HasMany;
 
@@ -121,7 +122,7 @@ trait HasRelationships
 
         $ownerKey = $ownerKey ?: $instance->getKeyName();
 
-        return new HasOne($this, $instance, $foreignKey, $ownerKey);
+        return new BelongsTo($this, $instance, $foreignKey, $ownerKey);
     }
 
     /**
