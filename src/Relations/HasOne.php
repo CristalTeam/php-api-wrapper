@@ -40,7 +40,7 @@ class HasOne extends Relation
      */
     public function addConstraints()
     {
-        $this->builder = $this->parent->newQuery();
+        $this->builder = $this->related->newQuery();
     }
 
     /**
