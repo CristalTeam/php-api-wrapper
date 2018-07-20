@@ -40,9 +40,27 @@ class Curl implements TransportInterface
     }
 
     /**
+     * Get entrypoint URL
+     * @return string
+     */
+    public function getEntrypoint()
+    {
+        return $this->entrypoint;
+    }
+
+    /**
+     * Get Curl client
+     * @return CurlClient
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function request($endpoint, array $data = [], $method = 'get'): array
+    public function rawRequest($endpoint, array $data = [], $method = 'get')
     {
         $method = strtolower($method);
 
@@ -65,19 +83,29 @@ class Curl implements TransportInterface
                 break;
         }
 
+        return $this->client->rawResponse;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function request($endpoint, array $data = [], $method = 'get'): array
+    {
+        $rawResponse = $this->rawRequest($endpoint, $data, $method);
+
         if (!($this->client->httpStatusCode >= 200 && $this->client->httpStatusCode <= 299)) {
-            $response = json_decode($this->client->rawResponse, true);
+            $response = json_decode($rawResponse, true);
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                throw new \Exception($this->client->rawResponse);
+                throw new \Exception($rawResponse);
             }
             throw new ApiException($response, $this->client->httpStatusCode);
         }
 
-        if (!$this->client->rawResponse) {
+        if (!$rawResponse) {
             return [];
         }
 
-        return json_decode($this->client->rawResponse, true);
+        return json_decode($rawResponse, true);
     }
 
     /**
