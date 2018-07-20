@@ -81,7 +81,8 @@ class Builder
             return $this->where($this->query)->get()[0] ?? null;
         }
 
-            $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field);
+        $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field);
+
         return $this->model->newInstance($data, true);
     }
 
@@ -212,13 +213,28 @@ class Builder
      */
     public function get()
     {
-        $builder = $this;
-
         $instance = $this->getModel();
-        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($builder->getQuery());
+        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
 
+        return $this->instanciateModels($entities['data']);
+    }
+
+    public function instanciateModels(array $data)
+    {
         return array_map(function ($entity) {
             return $this->model->newInstance($entity, true);
-        }, $entities['data']);
+        }, $data);
+    }
+
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $this->where(['limit' => $perPage, $pageName => $page]);
+
+        $instance = $this->getModel();
+        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+
+        $entities['data'] = $this->instanciateModels($entities['data']);
+
+        return $entities;
     }
 }
