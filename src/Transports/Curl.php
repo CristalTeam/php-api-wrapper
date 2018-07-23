@@ -68,7 +68,7 @@ class Curl implements TransportInterface
         if (!($this->client->httpStatusCode >= 200 && $this->client->httpStatusCode <= 299)) {
             $response = json_decode($this->client->rawResponse, true);
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                throw new \Exception($this->client->rawResponse);
+                throw new \Exception($this->client->rawResponse ?? $this->client->errorMessage);
             }
             throw new ApiException($response, $this->client->httpStatusCode);
         }
