@@ -6,12 +6,12 @@ use Curl\Curl as CurlClient;
 use Cpro\ApiWrapper\ApiException;
 use Cpro\ApiWrapper\TransportInterface;
 
-class Curl implements TransportInterface
+class Bearer implements TransportInterface
 {
     /**
      * @var string
      */
-    protected $jwt;
+    protected $token;
 
     /**
      * @var null|string
@@ -26,16 +26,16 @@ class Curl implements TransportInterface
     /**
      * Curl constructor.
      *
-     * @param string     $jwt
+     * @param string     $token
      * @param string     $entrypoint
      * @param CurlClient $client
      */
-    public function __construct(string $jwt, string $entrypoint, CurlClient $client)
+    public function __construct(string $token, string $entrypoint, CurlClient $client)
     {
         $this->client = $client;
-        $this->jwt = $jwt;
+        $this->token = $token;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
-        $this->client->setHeader('Authorization', 'Bearer '.$this->jwt);
+        $this->client->setHeader('Authorization', 'Bearer '.$this->token);
         $this->client->setHeader('Content-Type', 'application/json');
     }
 

@@ -4,7 +4,7 @@ namespace Cpro\ApiWrapper\Tests;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Cpro\ApiWrapper\Transports\Curl;
+use Cpro\ApiWrapper\Transports\Bearer;
 
 class TransportCurlTest extends TestCase
 {
@@ -34,7 +34,7 @@ class TransportCurlTest extends TestCase
 
     public function testCreateCurlTranportClass()
     {
-        new Curl($this->jwt, $this->entrypoint, $this->client);
+        new Bearer($this->jwt, $this->entrypoint, $this->client);
     }
 
     /**
@@ -43,7 +43,7 @@ class TransportCurlTest extends TestCase
      */
     protected function httpStatusCode($httpCode)
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $this->client->shouldReceive('get')->andReturn(null);
 
         $this->expectException(\Exception::class);
@@ -105,7 +105,7 @@ class TransportCurlTest extends TestCase
      */
     protected function httpStatusCodeValidParseAndReturnJsonReponse($httpCode)
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $this->client->shouldReceive('get')->andReturn(null);
 
         $this->client->httpStatusCode = $httpCode;
@@ -142,7 +142,7 @@ class TransportCurlTest extends TestCase
      */
     public function testGetMethodRequest()
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
         $this->client->shouldReceive('get')->andReturnUsing(function () use ($client) {
             $client->httpStatusCode = 200;
@@ -156,7 +156,7 @@ class TransportCurlTest extends TestCase
      */
     public function testPostMethodRequest()
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
         $this->client->shouldReceive('post')->andReturnUsing(function () use ($client) {
             $client->httpStatusCode = 200;
@@ -170,7 +170,7 @@ class TransportCurlTest extends TestCase
      */
     public function testPutMethodRequest()
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
         $this->client->shouldReceive('put')->andReturnUsing(function () use ($client) {
             $client->httpStatusCode = 200;
@@ -184,7 +184,7 @@ class TransportCurlTest extends TestCase
      */
     public function testDeleteMethodRequest()
     {
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
         $this->client->shouldReceive('delete')->andReturnUsing(function () use ($client) {
             $client->httpStatusCode = 200;
@@ -199,7 +199,7 @@ class TransportCurlTest extends TestCase
     public function testUnknownMethodRequestThrowsAnException()
     {
         $this->expectException(\Exception::class);
-        $curl = new Curl($this->jwt, $this->entrypoint, $this->client);
+        $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
         $this->client->shouldReceive('azerty')->andReturnUsing(function () use ($client) {
             $client->httpStatusCode = 200;
