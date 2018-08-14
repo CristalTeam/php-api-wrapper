@@ -1,6 +1,6 @@
 <?php
 
-namespace Starif\ApiWrapper\Relations;
+namespace Cpro\ApiWrapper\Relations;
 
 class BelongsTo extends HasOne
 {

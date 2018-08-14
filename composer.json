@@ -1,5 +1,5 @@
 {
-  "name": "starif/php-api-wrapper",
+  "name": "cpro/php-api-wrapper",
   "type": "package",
   "authors": [
     {
@@ -9,10 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Starif\\ApiWrapper\\": "src"
+      "Cpro\\ApiWrapper\\": "src"
     }
-  },
-  "require-dev": {
-    "phpdocumentor/phpdocumentor": "2.*"
   }
 }

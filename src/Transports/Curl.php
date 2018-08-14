@@ -1,10 +1,10 @@
 <?php
 
-namespace Starif\ApiWrapper\Transports;
+namespace Cpro\ApiWrapper\Transports;
 
 use Curl\Curl as CurlClient;
-use Starif\ApiWrapper\ApiException;
-use Starif\ApiWrapper\TransportInterface;
+use Cpro\ApiWrapper\ApiException;
+use Cpro\ApiWrapper\TransportInterface;
 
 class Curl implements TransportInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Starif\ApiWrapper\Concerns;
+namespace Cpro\ApiWrapper\Concerns;
 
-use Starif\ApiWrapper\Relations\BelongsTo;
-use Starif\ApiWrapper\Relations\HasOne;
-use Starif\ApiWrapper\Relations\HasMany;
+use Cpro\ApiWrapper\Relations\BelongsTo;
+use Cpro\ApiWrapper\Relations\HasOne;
+use Cpro\ApiWrapper\Relations\HasMany;
 
 trait HasRelationships
 {

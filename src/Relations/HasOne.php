@@ -1,10 +1,10 @@
 <?php
 
-namespace Starif\ApiWrapper\Relations;
+namespace Cpro\ApiWrapper\Relations;
 
 use Cristal\Modules\Tarif\Models\Caracteristique;
-use Starif\ApiWrapper\Model;
-use Starif\ApiWrapper\Relation;
+use Cpro\ApiWrapper\Model;
+use Cpro\ApiWrapper\Relation;
 
 class HasOne extends Relation
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Starif\ApiWrapper\Tests;
+namespace Cpro\ApiWrapper\Tests;
 
 use Mockery;
-use Starif\ApiWrapper\TransportInterface;
+use Cpro\ApiWrapper\TransportInterface;
 use PHPUnit\Framework\TestCase;
-use Starif\ApiWrapper\Api;
+use Cpro\ApiWrapper\Api;
 
 class ApiTest extends TestCase
 {

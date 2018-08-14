@@ -1,6 +1,6 @@
 <?php
 
-namespace  Starif\ApiWrapper;
+namespace  Cpro\ApiWrapper;
 
 class Builder
 {

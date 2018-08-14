@@ -1,10 +1,10 @@
 <?php
 
-namespace Starif\ApiWrapper\Relations;
+namespace Cpro\ApiWrapper\Relations;
 
-use Starif\ApiWrapper\Builder;
-use Starif\ApiWrapper\Model;
-use Starif\ApiWrapper\Relation;
+use Cpro\ApiWrapper\Builder;
+use Cpro\ApiWrapper\Model;
+use Cpro\ApiWrapper\Relation;
 
 class HasMany extends Relation
 {

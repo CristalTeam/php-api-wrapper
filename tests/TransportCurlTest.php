@@ -1,10 +1,10 @@
 <?php
 
-namespace Starif\ApiWrapper\Tests;
+namespace Cpro\ApiWrapper\Tests;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Starif\ApiWrapper\Transports\Curl;
+use Cpro\ApiWrapper\Transports\Curl;
 
 class TransportCurlTest extends TestCase
 {

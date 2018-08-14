@@ -1,8 +1,8 @@
 <?php
 
-namespace Starif\ApiWrapper;
+namespace Cpro\ApiWrapper;
 
-use Starif\ApiWrapper\Concerns\HasCache;
+use Cpro\ApiWrapper\Concerns\HasCache;
 
 /**
  * Class Api.

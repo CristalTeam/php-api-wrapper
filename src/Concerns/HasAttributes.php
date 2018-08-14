@@ -1,9 +1,9 @@
 <?php
 
-namespace Starif\ApiWrapper\Concerns;
+namespace Cpro\ApiWrapper\Concerns;
 
 use LogicException;
-use Starif\ApiWrapper\Relation;
+use Cpro\ApiWrapper\Relation;
 
 trait HasAttributes
 {

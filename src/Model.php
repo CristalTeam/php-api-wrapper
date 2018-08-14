@@ -1,13 +1,13 @@
 <?php
 
-namespace Starif\ApiWrapper;
+namespace Cpro\ApiWrapper;
 
 use ArrayAccess;
 use Exception;
 use JsonSerializable;
-use Starif\ApiWrapper\Concerns\HasAttributes;
-use Starif\ApiWrapper\Concerns\hasGlobalScopes;
-use Starif\ApiWrapper\Concerns\HasRelationships;
+use Cpro\ApiWrapper\Concerns\HasAttributes;
+use Cpro\ApiWrapper\Concerns\hasGlobalScopes;
+use Cpro\ApiWrapper\Concerns\HasRelationships;
 
 abstract class Model implements ArrayAccess, JsonSerializable
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Starif\ApiWrapper\Concerns;
+namespace Cpro\ApiWrapper\Concerns;
 
 trait hasGlobalScopes
 {
