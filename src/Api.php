@@ -17,7 +17,7 @@ class Api
     /**
      * @var TransportInterface
      */
-    private $transport;
+    protected $transport;
 
     /**
      * Api constructor.
