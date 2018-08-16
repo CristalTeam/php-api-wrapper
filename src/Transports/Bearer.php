@@ -40,7 +40,8 @@ class Bearer implements TransportInterface
     }
 
     /**
-     * Get entrypoint URL
+     * Get entrypoint URL.
+     *
      * @return string
      */
     public function getEntrypoint()
@@ -49,7 +50,8 @@ class Bearer implements TransportInterface
     }
 
     /**
-     * Get Curl client
+     * Get Curl client.
+     *
      * @return CurlClient
      */
     public function getClient()
@@ -67,23 +69,23 @@ class Bearer implements TransportInterface
         switch ($method) {
             case 'get':
                 $url = $this->getUrl($endpoint, $data);
-                $this->client->get($url);
+                $this->getClient()->get($url);
                 break;
             case 'post':
                 $url = $this->getUrl($endpoint);
-                $this->client->post($url, json_encode($data));
+                $this->getClient()->post($url, json_encode($data));
                 break;
             case 'put':
                 $url = $this->getUrl($endpoint);
-                $this->client->put($url, json_encode($data));
+                $this->getClient()->put($url, json_encode($data));
                 break;
             case 'delete':
                 $url = $this->getUrl($endpoint);
-                $this->client->delete($url, json_encode($data));
+                $this->getClient()->delete($url, json_encode($data));
                 break;
         }
 
-        return $this->client->rawResponse;
+        return $this->getClient()->rawResponse;
     }
 
     /**
@@ -93,12 +95,12 @@ class Bearer implements TransportInterface
     {
         $rawResponse = $this->rawRequest($endpoint, $data, $method);
 
-        if (!($this->client->httpStatusCode >= 200 && $this->client->httpStatusCode <= 299)) {
+        if (!($this->getClient()->httpStatusCode >= 200 && $this->getClient()->httpStatusCode <= 299)) {
             $response = json_decode($rawResponse, true);
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                throw new \Exception($rawResponse ?? $this->client->errorMessage);
+                throw new \Exception($rawResponse ?? $this->getClient()->errorMessage);
             }
-            throw new ApiException($response, $this->client->httpStatusCode);
+            throw new ApiException($response, $this->getClient()->httpStatusCode);
         }
 
         if (!$rawResponse) {
@@ -113,11 +115,13 @@ class Bearer implements TransportInterface
      *
      * @param string $endpoint
      * @param array  $data
+     *
      * @return string
      */
     protected function getUrl(string $endpoint, array $data = [])
     {
-        $url = $this->entrypoint.ltrim($endpoint, '/');
+        $url = $this->getEntrypoint().ltrim($endpoint, '/');
+
         return (count($data)) ? $url.'?'.http_build_query($data) : $url;
     }
 }

@@ -11,7 +11,6 @@ use Cpro\ApiWrapper\Concerns\HasCache;
  */
 class Api
 {
-
     use HasCache;
 
     /**
@@ -79,7 +78,7 @@ class Api
     {
         $key = md5(__FUNCTION__.$endpoint.json_encode($filters));
 
-        if($this->hasCache($key)){
+        if ($this->hasCache($key)) {
             return $this->getCache($key);
         }
 
@@ -91,15 +90,15 @@ class Api
      *
      * @param string $endpoint
      * @param int    $id
-     * @param array $filters
+     * @param array  $filters
      *
      * @return array
      */
-    protected function findOne(string $endpoint, int $id, array $filters = []): array
+    protected function findOne(string $endpoint, $id, array $filters = []): array
     {
         $uri = '/'.$endpoint.'/'.$id;
         $key = $uri.'?'.http_build_query($filters);
-        if($this->hasCache($key)){
+        if ($this->hasCache($key)) {
             return $this->getCache($key);
         }
 
@@ -115,7 +114,7 @@ class Api
      *
      * @return array
      */
-    protected function update(string $endpoint, int $id, $attributes): array
+    protected function update(string $endpoint, $id, $attributes): array
     {
         $key = $endpoint.'/'.$id.'?';
 
@@ -143,7 +142,7 @@ class Api
      *
      * @return array
      */
-    protected function delete(string $endpoint, int $id): array
+    protected function delete(string $endpoint, $id): array
     {
         $key = $endpoint.'/'.$id.'?';
         $this->deleteCache($key);
