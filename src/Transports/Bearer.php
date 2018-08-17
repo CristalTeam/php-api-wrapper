@@ -2,9 +2,10 @@
 
 namespace Cpro\ApiWrapper\Transports;
 
-use Curl\Curl as CurlClient;
+use Cpro\ApiWrapper\ApiEntityNotFoundException;
 use Cpro\ApiWrapper\ApiException;
 use Cpro\ApiWrapper\TransportInterface;
+use Curl\Curl as CurlClient;
 
 class Bearer implements TransportInterface
 {
@@ -100,6 +101,10 @@ class Bearer implements TransportInterface
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
                 throw new \Exception($rawResponse ?? $this->getClient()->errorMessage);
             }
+            if ($this->getClient()->httpStatusCode >= 400 && $this->getClient()->httpStatusCode <= 499) {
+                throw new ApiEntityNotFoundException($response, $this->getClient()->httpStatusCode);
+            }
+
             throw new ApiException($response, $this->getClient()->httpStatusCode);
         }
 
