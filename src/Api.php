@@ -82,7 +82,7 @@ class Api
             return $this->getCache($key);
         }
 
-        return $this->setCache($key, $this->transport->request('/'.$endpoint.'s', $filters));
+        return $this->setCache($key, $this->transport->request('/'.$endpoint.'s', $filters) ?? []);
     }
 
     /**
@@ -102,7 +102,7 @@ class Api
             return $this->getCache($key);
         }
 
-        return $this->transport->request($uri, $filters);
+        return $this->transport->request($uri, $filters) ?? [];
     }
 
     /**
@@ -118,7 +118,7 @@ class Api
     {
         $key = $endpoint.'/'.$id.'?';
 
-        return $this->setCache($key, $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put'));
+        return $this->setCache($key, $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put') ?? []);
     }
 
     /**
@@ -131,7 +131,7 @@ class Api
      */
     protected function create(string $endpoint, $attributes): array
     {
-        return $this->transport->request('/'.$endpoint, $attributes, 'post');
+        return $this->transport->request('/'.$endpoint, $attributes, 'post') ?? [];
     }
 
     /**
@@ -147,6 +147,6 @@ class Api
         $key = $endpoint.'/'.$id.'?';
         $this->deleteCache($key);
 
-        return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete');
+        return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete') ?? [];
     }
 }

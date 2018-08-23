@@ -4,6 +4,8 @@ namespace  Cpro\ApiWrapper;
 
 class Builder
 {
+    const MAX_RESULTS = 9999;
+
     /**
      * @var array
      */
@@ -71,6 +73,18 @@ class Builder
 
     public function find($field, $value = null)
     {
+        $res = null;
+        try {
+            $res = $this->findOrFail($field, $value);
+        } catch (ApiEntityNotFoundException $e) {
+            return null;
+        }
+
+        return $res;
+    }
+
+    public function findOrFail($field, $value = null)
+    {
         if (is_array($field)) {
             $this->query = array_merge($this->query, ['id' => $field]);
 
@@ -110,7 +124,7 @@ class Builder
      */
     public function all()
     {
-        return $this->where('limit', 9999)->get();
+        return $this->take(static::MAX_RESULTS)->get();
     }
 
     /**
