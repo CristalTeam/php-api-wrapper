@@ -92,7 +92,7 @@ class Bearer implements TransportInterface
     /**
      * {@inheritdoc}
      */
-    public function request($endpoint, array $data = [], $method = 'get'): array
+    public function request($endpoint, array $data = [], $method = 'get')
     {
         $rawResponse = $this->rawRequest($endpoint, $data, $method);
 
@@ -106,10 +106,6 @@ class Bearer implements TransportInterface
             }
 
             throw new ApiException($response, $this->getClient()->httpStatusCode);
-        }
-
-        if (!$rawResponse) {
-            return [];
         }
 
         return json_decode($rawResponse, true);
