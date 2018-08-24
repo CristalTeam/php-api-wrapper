@@ -228,9 +228,13 @@ class Builder
     public function get()
     {
         $instance = $this->getModel();
-        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+        try {
+            $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+        } catch (ApiEntityNotFoundException $e) {
+            return [];
+        }
 
-        return $this->instanciateModels($entities['data']);
+        return $this->instanciateModels($entities);
     }
 
     public function instanciateModels(array $data)
@@ -247,7 +251,7 @@ class Builder
         $instance = $this->getModel();
         $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
 
-        $entities['data'] = $this->instanciateModels($entities['data']);
+        $entities['data'] = $this->instanciateModels($entities);
 
         return $entities;
     }

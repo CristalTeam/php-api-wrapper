@@ -98,11 +98,11 @@ class Bearer implements TransportInterface
 
         if (!($this->getClient()->httpStatusCode >= 200 && $this->getClient()->httpStatusCode <= 299)) {
             $response = json_decode($rawResponse, true);
-            if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                throw new \Exception($rawResponse ?? $this->getClient()->errorMessage);
-            }
             if ($this->getClient()->httpStatusCode == 404) {
                 throw new ApiEntityNotFoundException($response, $this->getClient()->httpStatusCode);
+            }
+            if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
+                throw new \Exception($rawResponse ?? $this->getClient()->errorMessage);
             }
 
             throw new ApiException($response, $this->getClient()->httpStatusCode);

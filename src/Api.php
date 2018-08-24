@@ -52,7 +52,7 @@ class Api
             return $this->$name(...$arguments);
         }
 
-        preg_match('/^(get|create|update|delete)([\w-]+?)(s|)$/', $name, $matches);
+        preg_match('/^(get|create|update|delete)([\w-\_\/]+?)(s|)$/', $name, $matches);
 
         $endpoint = strtolower($matches[2]);
         if ($matches[1] === 'get') {

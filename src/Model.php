@@ -258,7 +258,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function toArray()
     {
-        return $this->getAttributes();
+        return array_merge($this->attributesToArray(), $this->relationsToArray());
     }
 
     /**
