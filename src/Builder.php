@@ -237,8 +237,12 @@ class Builder
         return $this->instanciateModels($entities);
     }
 
-    public function instanciateModels(array $data)
+    public function instanciateModels($data)
     {
+        if (!$data) {
+            return null;
+        }
+
         return array_map(function ($entity) {
             return $this->model->newInstance($entity, true);
         }, $data);
