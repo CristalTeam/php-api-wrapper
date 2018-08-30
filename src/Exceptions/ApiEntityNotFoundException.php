@@ -1,8 +1,7 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cpro\ApiWrapper\Exceptions;
 
-use Exception;
 use Throwable;
 
 class ApiEntityNotFoundException extends ApiException

@@ -2,13 +2,10 @@
 
 namespace Cpro\ApiWrapper\Relations;
 
-use Cristal\Modules\Tarif\Models\Caracteristique;
 use Cpro\ApiWrapper\Model;
-use Cpro\ApiWrapper\Relation;
 
 class HasOne extends Relation
 {
-
     protected $foreignKey;
     protected $localKey;
 
@@ -47,11 +44,13 @@ class HasOne extends Relation
      * Get the models corresponding to data passed by array.
      *
      * @param $data
+     *
      * @return mixed
      */
     public function getRelationsFromArray($data)
     {
         $class = get_class($this->related);
+
         return new $class($data, isset($data[$this->localKey]));
     }
 }

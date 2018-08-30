@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cpro\ApiWrapper\Transports;
 
 interface TransportInterface
 {

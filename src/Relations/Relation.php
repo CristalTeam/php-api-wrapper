@@ -1,6 +1,8 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cpro\ApiWrapper\Relations;
+
+use Cpro\ApiWrapper\Model;
 
 abstract class Relation
 {
@@ -26,7 +28,8 @@ abstract class Relation
     /**
      * Create a new relation instance.
      *
-     * @param  Model  $parent
+     * @param Model $parent
+     *
      * @return void
      */
     public function __construct(Model $parent)
@@ -45,25 +48,28 @@ abstract class Relation
     }
 
     /**
-     * Set the base constraints on the relation query.
+     * Set the base constraints on the relation query
+     * Set builder.
      *
      * @return void
      */
-    abstract function addConstraints();
+    abstract public function addConstraints();
 
     /**
      * Get the models corresponding to data passed by array.
      *
      * @param $data
+     *
      * @return mixed
      */
-    abstract function getRelationsFromArray($data);
+    abstract public function getRelationsFromArray($data);
 
     /**
      * Handle dynamic method calls to the relationship.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)

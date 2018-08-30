@@ -2,15 +2,12 @@
 
 namespace Cpro\ApiWrapper\Relations;
 
-use Cpro\ApiWrapper\Builder;
 use Cpro\ApiWrapper\Model;
-use Cpro\ApiWrapper\Relation;
 
 class HasMany extends Relation
 {
     protected $foreignKey;
     protected $localKey;
-
 
     public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
     {

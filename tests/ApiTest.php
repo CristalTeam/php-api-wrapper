@@ -2,10 +2,10 @@
 
 namespace Cpro\ApiWrapper\Tests;
 
-use Mockery;
-use Cpro\ApiWrapper\TransportInterface;
-use PHPUnit\Framework\TestCase;
 use Cpro\ApiWrapper\Api;
+use Cpro\ApiWrapper\Transports\TransportInterface;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
 {
@@ -23,6 +23,7 @@ class ApiTest extends TestCase
         $transport->shouldReceive('request')->withArgs([Mockery::any(), self::WITH_FILTER])->andReturn(self::WITH_FILTER);
         $transport->shouldReceive('request')->withArgs([Mockery::any(), []])->andReturn(self::WITHOUT_FILTER);
         $transport->shouldReceive('request')->withArgs([Mockery::pattern('#/'.self::ID_ENTITY.'$#')])->andReturn(['entity']);
+
         return $transport;
     }
 
@@ -49,7 +50,7 @@ class ApiTest extends TestCase
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
-        foreach(self::ENDPOINTS as $endpoint){
+        foreach (self::ENDPOINTS as $endpoint) {
             $this->assertEquals(self::WITHOUT_FILTER, $api->{'get'.ucfirst($endpoint).'s'}());
         }
     }
@@ -58,7 +59,7 @@ class ApiTest extends TestCase
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
-        foreach(self::ENDPOINTS as $endpoint){
+        foreach (self::ENDPOINTS as $endpoint) {
             $this->assertEquals(self::WITH_FILTER, $api->{'get'.ucfirst($endpoint).'s'}(self::WITH_FILTER));
         }
     }
@@ -68,7 +69,7 @@ class ApiTest extends TestCase
         $this->expectException(\TypeError::class);
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
-        foreach(self::ENDPOINTS as $endpoint){
+        foreach (self::ENDPOINTS as $endpoint) {
             $api->{'get'.ucfirst($endpoint)}();
         }
     }
@@ -77,7 +78,7 @@ class ApiTest extends TestCase
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
-        foreach(self::ENDPOINTS as $endpoint){
+        foreach (self::ENDPOINTS as $endpoint) {
             $entity = $api->{'get'.ucfirst($endpoint)}(self::ID_ENTITY);
             $this->assertInternalType('array', $entity);
         }

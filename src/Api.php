@@ -3,11 +3,12 @@
 namespace Cpro\ApiWrapper;
 
 use Cpro\ApiWrapper\Concerns\HasCache;
+use Cpro\ApiWrapper\Transports\TransportInterface;
 
 /**
  * Class Api.
  *
- * @throws ApiException
+ * @throws Cpro\ApiWrapper\Exceptions\ApiException
  */
 class Api
 {
@@ -76,13 +77,16 @@ class Api
      */
     protected function findAll(string $endpoint, array $filters = []): array
     {
-        $key = md5(__FUNCTION__.$endpoint.json_encode($filters));
+        $key = md5(__FUNCTION__.static::pluralize($endpoint).json_encode($filters));
 
         if ($this->hasCache($key)) {
             return $this->getCache($key);
         }
 
-        return $this->setCache($key, $this->transport->request('/'.$endpoint.'s', $filters) ?? []);
+        return $this->setCache(
+            $key,
+            $this->transport->request('/'.static::pluralize($endpoint), $filters) ?? []
+        );
     }
 
     /**
@@ -148,5 +152,10 @@ class Api
         $this->deleteCache($key);
 
         return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete') ?? [];
+    }
+
+    public static function pluralize($endpoint): string
+    {
+        return $endpoint.'s';
     }
 }
