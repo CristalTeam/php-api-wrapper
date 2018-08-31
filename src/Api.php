@@ -98,7 +98,7 @@ class Api
      *
      * @return array
      */
-    protected function findOne(string $endpoint, $id, array $filters = []): array
+    protected function findOne(string $endpoint, $id, array $filters = [])
     {
         $uri = '/'.$endpoint.'/'.$id;
         $key = $uri.'?'.http_build_query($filters);

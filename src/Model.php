@@ -3,11 +3,13 @@
 namespace Cpro\ApiWrapper;
 
 use ArrayAccess;
+use Cpro\ApiWrapper\Concerns\HasAttributes;
+use Cpro\ApiWrapper\Concerns\HasRelationships;
+use Cpro\ApiWrapper\Concerns\hasGlobalScopes;
+use Cpro\ApiWrapper\Exceptions\ApiException;
+use Cpro\ApiWrapper\Exceptions\MissingApiException;
 use Exception;
 use JsonSerializable;
-use Cpro\ApiWrapper\Concerns\HasAttributes;
-use Cpro\ApiWrapper\Concerns\hasGlobalScopes;
-use Cpro\ApiWrapper\Concerns\HasRelationships;
 
 abstract class Model implements ArrayAccess, JsonSerializable
 {
@@ -30,9 +32,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
     protected $primaryKey = 'id';
 
     /**
-     * @var Api
+     * Table resolver for different apis.
+     *
+     * @var array Apis
      */
-    protected static $api;
+    protected static $apis = [];
+
+    /**
+     * index for the api resolver.
+     *
+     * @var string api
+     */
+    protected static $api = 'default';
 
     /**
      * Indicates if the model exists.
@@ -62,7 +73,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public static function setApi(Api $api)
     {
-        static::$api = $api;
+        static::$apis[static::$api] = $api;
     }
 
     /**
@@ -72,7 +83,11 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function getApi(): Api
     {
-        return static::$api;
+        if (static::$apis[static::$api] ?? null) {
+            return static::$apis[static::$api];
+        }
+
+        throw new MissingApiException();
     }
 
     /**
