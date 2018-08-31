@@ -32,7 +32,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * @var Api
      */
-    protected $api;
+    protected static $api;
 
     /**
      * Indicates if the model exists.
@@ -56,11 +56,23 @@ abstract class Model implements ArrayAccess, JsonSerializable
     public $wasRecentlyCreated = false;
 
     /**
+     * Set the Model Api.
+     *
+     * @param Api $api
+     */
+    public static function setApi(Api $api)
+    {
+        static::$api = $api;
+    }
+
+    /**
+     * Get the Model Api.
+     *
      * @return Api
      */
     public function getApi(): Api
     {
-        return $this->api;
+        return static::$api;
     }
 
     /**
@@ -512,7 +524,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
         $dirty = $this->getDirty();
 
         if (count($dirty) > 0) {
-            $updatedField = $this->api->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
+            $updatedField = $this->getApi()->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
             $this->fill($updatedField);
             $this->syncChanges();
         }
@@ -528,7 +540,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     protected function performInsert()
     {
         $attributes = $this->attributes;
-        $updatedField = $this->api->{'create'.ucfirst($this->getEntity())}($attributes);
+        $updatedField = $this->getApi()->{'create'.ucfirst($this->getEntity())}($attributes);
         $this->fill($updatedField);
         $this->exists = true;
         $this->wasRecentlyCreated = true;
@@ -543,7 +555,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     protected function performDeleteOnModel()
     {
-        $this->api->{'delete'.ucfirst($this->getEntity())}($this->{$this->primaryKey});
+        $this->getApi()->{'delete'.ucfirst($this->getEntity())}($this->{$this->primaryKey});
 
         $this->exists = false;
     }
