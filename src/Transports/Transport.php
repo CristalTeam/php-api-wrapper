@@ -3,6 +3,7 @@
 namespace Cpro\ApiWrapper\Transports;
 
 use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+use Cpro\ApiWrapper\Exceptions\ApiException;
 use Curl\Curl as CurlClient;
 
 class Transport implements TransportInterface
@@ -87,7 +88,7 @@ class Transport implements TransportInterface
                 throw new ApiEntityNotFoundException($response, $this->getClient()->httpStatusCode);
             }
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                throw new \Exception($rawResponse ?? $this->getClient()->errorMessage);
+                throw new ApiException($rawResponse ?? $this->getClient()->errorMessage);
             }
 
             throw new ApiException($response, $this->getClient()->httpStatusCode);
