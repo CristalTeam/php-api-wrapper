@@ -3,7 +3,7 @@
 namespace Cpro\ApiWrapper\Concerns;
 
 use LogicException;
-use Cpro\ApiWrapper\Relation;
+use Cpro\ApiWrapper\Relations\Relation;
 
 trait HasAttributes
 {
