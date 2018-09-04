@@ -228,11 +228,11 @@ class Builder
     public function get()
     {
         $instance = $this->getModel();
-        try {
-            $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
-        } catch (ApiEntityNotFoundException $e) {
-            return [];
-        }
+        // try {
+        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+        // } catch (ApiEntityNotFoundException $e) {
+        // return [];
+        // }
 
         return $this->instanciateModels($entities);
     }
