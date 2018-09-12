@@ -72,6 +72,13 @@ class Transport implements TransportInterface
                 break;
         }
 
+        if ($this->getClient()->httpStatusCode == 404) {
+            throw new ApiEntityNotFoundException(
+                (array) $this->getClient()->response,
+                $this->getClient()->httpStatusCode
+            );
+        }
+
         return $this->getClient()->rawResponse;
     }
 
@@ -84,10 +91,6 @@ class Transport implements TransportInterface
 
         if (!($this->getClient()->httpStatusCode >= 200 && $this->getClient()->httpStatusCode <= 299)) {
             $response = json_decode($rawResponse, true);
-
-            if ($this->getClient()->httpStatusCode == 404) {
-                throw new ApiEntityNotFoundException($response, $this->getClient()->httpStatusCode);
-            }
 
             if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
                 $response = ['message' => $this->getClient()->response];
