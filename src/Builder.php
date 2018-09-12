@@ -2,6 +2,8 @@
 
 namespace  Cpro\ApiWrapper;
 
+use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+
 class Builder
 {
     const MAX_RESULTS = 9999;
