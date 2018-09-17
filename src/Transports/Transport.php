@@ -125,6 +125,10 @@ class Transport implements TransportInterface
             return null;
         }
 
+        $data = array_map(function($item) {
+            return is_null($item) ? '' : $item;
+        }, $data);
+
         return '?'.http_build_query($data);
     }
 }
