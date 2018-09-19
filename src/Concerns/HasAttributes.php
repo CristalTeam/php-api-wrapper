@@ -412,7 +412,7 @@ trait HasAttributes
      */
     public function isDirty()
     {
-        return $this->getDirty() > 0;
+        return count($this->getDirty()) > 0;
     }
 
     /**

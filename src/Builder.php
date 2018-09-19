@@ -76,6 +76,7 @@ class Builder
     public function find($field, $value = null)
     {
         $res = null;
+
         try {
             $res = $this->findOrFail($field, $value);
         } catch (ApiEntityNotFoundException $e) {
@@ -97,7 +98,7 @@ class Builder
             return $this->where($this->query)->get()[0] ?? null;
         }
 
-        $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field);
+        $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->getQuery());
 
         return $this->model->newInstance($data, true);
     }
