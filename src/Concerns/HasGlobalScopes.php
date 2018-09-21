@@ -2,20 +2,21 @@
 
 namespace Cpro\ApiWrapper\Concerns;
 
-trait hasGlobalScopes
+trait HasGlobalScopes
 {
     /**
      * Register a new global scope on the model.
      *
-     * @param  array|string  $scope
-     * @param  array|null  $implementation
+     * @param array|string $scope
+     * @param array|null   $implementation
+     *
      * @return mixed
      *
      * @throws \InvalidArgumentException
      */
     public static function addGlobalScope($scope, ?array $implementation = null)
     {
-        if (is_string($scope) && ! is_null($implementation)) {
+        if (is_string($scope) && !is_null($implementation)) {
             return static::$globalScopes[static::class][$scope] = $implementation;
         } elseif (is_array($scope)) {
             return static::$globalScopes[static::class][spl_object_hash((object) $scope)] = $scope;
@@ -27,18 +28,20 @@ trait hasGlobalScopes
     /**
      * Determine if a model has a global scope.
      *
-     * @param  array|string  $scope
+     * @param array|string $scope
+     *
      * @return bool
      */
     public static function hasGlobalScope($scope)
     {
-        return ! is_null(static::getGlobalScope($scope));
+        return !is_null(static::getGlobalScope($scope));
     }
 
     /**
      * Get a global scope registered with the model.
      *
-     * @param  string  $scope
+     * @param string $scope
+     *
      * @return array|null
      */
     public static function getGlobalScope($scope)
