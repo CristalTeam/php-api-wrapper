@@ -2,8 +2,24 @@
 
 namespace Cpro\ApiWrapper\Relations;
 
-class BelongsTo extends HasOne
+use Cpro\ApiWrapper\Model;
+
+class BelongsTo extends Relation
 {
+    protected $foreignKey;
+    protected $localKey;
+
+    public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
+    {
+        parent::__construct($parent);
+        $this->parent = $parent;
+        $this->related = $related;
+        $this->foreignKey = $foreignKey;
+        $this->localKey = $localKey;
+
+        $this->addConstraints();
+    }
+
     /**
      * Get the results of the relationship.
      *
@@ -11,7 +27,7 @@ class BelongsTo extends HasOne
      */
     public function getResults()
     {
-        return $this->builder->first();
+        return $this->builder->find($this->parent->{$this->foreignKey});
     }
 
     /**
@@ -21,6 +37,20 @@ class BelongsTo extends HasOne
      */
     public function addConstraints()
     {
-        $this->builder = $this->related->where($this->localKey, $this->parent->{$this->foreignKey});
+        $this->builder = $this->related->newQuery();
+    }
+
+    /**
+     * Get the models corresponding to data passed by array.
+     *
+     * @param $data
+     *
+     * @return mixed
+     */
+    public function getRelationsFromArray($data)
+    {
+        $class = get_class($this->related);
+
+        return new $class($data, isset($data[$this->localKey]));
     }
 }
