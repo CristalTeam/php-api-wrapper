@@ -2,6 +2,7 @@
 
 namespace Cpro\ApiWrapper\Concerns;
 
+use Cpro\ApiWrapper\Model;
 use LogicException;
 use Cpro\ApiWrapper\Relations\Relation;
 
@@ -27,6 +28,13 @@ trait HasAttributes
      * @var array
      */
     protected $changes = [];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [];
 
     /**
      * The accessors to append to the model's array form.
@@ -86,6 +94,71 @@ trait HasAttributes
     public function hasSetMutator($key)
     {
         return method_exists($this, 'set'.self::studly($key).'Attribute');
+    }
+
+    /**
+     * Cast an attribute to a native PHP type.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @return mixed
+     */
+    protected function castAttribute($key, $value)
+    {
+        if (is_null($value)) {
+            return $value;
+        }
+
+        switch ($this->getCastType($key)) {
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'real':
+            case 'float':
+            case 'double':
+                return (float) $value;
+            case 'string':
+                return (string) $value;
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+            case 'object':
+                return $this->fromJson($value, true);
+            case 'array':
+            case 'json':
+                return $this->fromJson($value);
+            case 'date':
+                return $this->asDate($value);
+            case 'datetime':
+                return $this->asDateTime($value);
+            case 'timestamp':
+                return $this->asTimestamp($value);
+            default:
+                return $this->asModel($key, $value) ?? $value;
+        }
+    }
+
+    /**
+     * Get the type of cast for a model attribute.
+     *
+     * @param  string $key
+     * @return string
+     */
+    protected function getCastType($key)
+    {
+        return trim(strtolower($this->getCasts()[$key]));
+    }
+
+    /**
+     * Decode the given JSON back into an array or object.
+     *
+     * @param  string  $value
+     * @param  bool  $asObject
+     * @return mixed
+     */
+    public function fromJson($value, $asObject = false)
+    {
+        return json_decode($value, ! $asObject);
     }
 
     /**
@@ -267,6 +340,13 @@ trait HasAttributes
             return $this->mutateAttribute($key, $value);
         }
 
+        // If the attribute exists within the cast array, we will convert it to
+        // an appropriate native PHP type dependant upon the associated value
+        // given with the key in the pair. Dayle made this comment line up.
+        if ($this->hasCast($key)) {
+            return $this->castAttribute($key, $value);
+        }
+
         // If the attribute is listed as a date, we will convert it to a DateTime
         // instance on retrieval, which makes it quite convenient to work with
         // date fields without having to create a mutator for each property.
@@ -301,6 +381,17 @@ trait HasAttributes
     public function hasGetMutator($key)
     {
         return method_exists($this, 'get'.self::studly($key).'Attribute');
+    }
+
+    /**
+     * Return a timestamp as DateTime object with time set to 00:00:00.
+     *
+     * @param  mixed  $value
+     * @return \DateTime
+     */
+    protected function asDate($value)
+    {
+        return $this->asDateTime($value)->setTime(0, 0, 0);
     }
 
     /**
@@ -350,6 +441,32 @@ trait HasAttributes
     }
 
     /**
+     * Determine whether an attribute should be cast to a native type.
+     *
+     * @param  string            $key
+     * @param  array|string|null $types
+     * @return bool
+     */
+    public function hasCast($key, $types = null)
+    {
+        if (array_key_exists($key, $this->getCasts())) {
+            return $types ? in_array($this->getCastType($key), (array) $types, true) : true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the casts array.
+     *
+     * @return array
+     */
+    public function getCasts()
+    {
+        return $this->casts;
+    }
+
+    /**
      * Determine if the given value is a standard date format.
      *
      * @param string $value
@@ -385,6 +502,33 @@ trait HasAttributes
         return empty($value) ? $value : $this->asDateTime($value)->format(
             $this->getDateFormat()
         );
+    }
+
+    /**
+     * Return a timestamp as unix timestamp.
+     *
+     * @param  mixed  $value
+     * @return int
+     */
+    protected function asTimestamp($value)
+    {
+        return $this->asDateTime($value)->getTimestamp();
+    }
+
+    /**
+     * Get a model instance.
+     *
+     * @param  string $key
+     * @param  mixed  $value
+     * @return Model|null
+     */
+    protected function asModel($key, $value)
+    {
+        $className = $this->getCasts()[$key];
+        if(class_exists($className) && is_a($className, Model::class, true)) {
+            return new $className($value, true);
+        }
+        return null;
     }
 
     /**
