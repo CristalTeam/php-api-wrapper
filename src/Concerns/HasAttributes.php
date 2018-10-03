@@ -3,7 +3,7 @@
 namespace Cpro\ApiWrapper\Concerns;
 
 use LogicException;
-use Cpro\ApiWrapper\Relations\Relation;
+use Cpro\ApiWrapper\Relations\RelationInterface;
 
 trait HasAttributes
 {
@@ -211,7 +211,7 @@ trait HasAttributes
     {
         $relation = $this->$method();
 
-        if (!$relation instanceof Relation) {
+        if (!$relation instanceof RelationInterface) {
             throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
         }
 

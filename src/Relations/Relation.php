@@ -4,7 +4,7 @@ namespace Cpro\ApiWrapper\Relations;
 
 use Cpro\ApiWrapper\Model;
 
-abstract class Relation
+abstract class Relation implements RelationInterface
 {
     /**
      * The parent model instance.
