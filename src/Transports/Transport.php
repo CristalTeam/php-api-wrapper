@@ -60,15 +60,15 @@ class Transport implements TransportInterface
                 break;
             case 'post':
                 $url = $this->getUrl($endpoint);
-                $this->getClient()->post($url, json_encode($data));
+                $this->getClient()->post($url, $this->encodeBody($data));
                 break;
             case 'put':
                 $url = $this->getUrl($endpoint);
-                $this->getClient()->put($url, json_encode($data));
+                $this->getClient()->put($url, $this->encodeBody($data));
                 break;
             case 'delete':
                 $url = $this->getUrl($endpoint);
-                $this->getClient()->delete($url, json_encode($data));
+                $this->getClient()->delete($url, $this->encodeBody($data));
                 break;
         }
 
@@ -80,6 +80,19 @@ class Transport implements TransportInterface
         }
 
         return $this->getClient()->rawResponse;
+    }
+
+    public function encodeBody($data)
+    {
+        // If a file is sent, use multipart header and raw data
+        foreach ($data as $value) {
+            if ($value instanceof \CURLFile) {
+                $this->getClient()->setHeader('Content-Type', 'multipart/form-data');
+                return $data;
+            }
+        }
+
+        return json_encode($data);
     }
 
     /**
