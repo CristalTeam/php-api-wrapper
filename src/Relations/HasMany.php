@@ -8,6 +8,8 @@ class HasMany extends Relation
 {
     protected $foreignKey;
     protected $localKey;
+    protected $queryKey;
+    protected $queryValue;
 
     public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
     {
@@ -26,7 +28,10 @@ class HasMany extends Relation
      */
     public function addConstraints()
     {
-        $this->builder = $this->related->where($this->localKey, $this->parent->{$this->foreignKey});
+        $this->queryKey = $this->localKey;
+        $this->queryValue = $this->parent->{$this->foreignKey};
+
+        $this->builder = $this->related->where($this->queryKey, $this->queryValue);
     }
 
     /**

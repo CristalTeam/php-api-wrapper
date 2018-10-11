@@ -27,7 +27,11 @@ class BelongsTo extends Relation
      */
     public function getResults()
     {
-        return $this->builder->find($this->parent->{$this->foreignKey});
+        if (!($queryValue = $this->parent->{$this->foreignKey})) {
+            return null;
+        }
+
+        return $this->builder->find($queryValue);
     }
 
     /**
