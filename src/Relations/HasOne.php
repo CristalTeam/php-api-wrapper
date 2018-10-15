@@ -11,6 +11,10 @@ class HasOne extends HasMany
      */
     public function getResults()
     {
+        if (!$this->queryValue) {
+            return null;
+        }
+
         return $this->builder->first();
     }
 
