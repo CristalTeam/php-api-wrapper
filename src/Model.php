@@ -6,6 +6,7 @@ use ArrayAccess;
 use Cpro\ApiWrapper\Concerns\HasAttributes;
 use Cpro\ApiWrapper\Concerns\HasRelationships;
 use Cpro\ApiWrapper\Concerns\HasGlobalScopes;
+use Cpro\ApiWrapper\Concerns\HidesAttributes;
 use Cpro\ApiWrapper\Exceptions\ApiException;
 use Cpro\ApiWrapper\Exceptions\MissingApiException;
 use Exception;
@@ -16,6 +17,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     use HasAttributes;
     use HasRelationships;
     use HasGlobalScopes;
+    use HidesAttributes;
 
     /**
      * The entity model's name on Api.
