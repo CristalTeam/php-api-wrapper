@@ -7,6 +7,9 @@
       "email": "cristal@cpro.fr"
     }
   ],
+  "require" : {
+    "php-curl-class/php-curl-class": "^8.3"
+  },
   "autoload": {
     "psr-4": {
       "Cpro\\ApiWrapper\\": "src"
