@@ -230,14 +230,19 @@ class Builder
      */
     public function get()
     {
+        $entities = $this->raw();
+
+        return $this->instanciateModels($entities);
+    }
+    
+    public function raw()
+    {
         $instance = $this->getModel();
         try {
-            $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+            return $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
         } catch (ApiEntityNotFoundException $e) {
             return [];
         }
-
-        return $this->instanciateModels($entities);
     }
 
     public function instanciateModels($data)
