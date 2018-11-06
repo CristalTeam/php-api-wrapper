@@ -8,6 +8,10 @@ use Curl\Curl as CurlClient;
 
 class Transport implements TransportInterface
 {
+    const MAX_RETRIES = 2;
+
+    const HTTP_NETWORK_ERROR_CODE = 0;
+
     /**
      * @var null|string
      */
@@ -88,6 +92,7 @@ class Transport implements TransportInterface
         foreach ($data as $value) {
             if ($value instanceof \CURLFile) {
                 $this->getClient()->setHeader('Content-Type', 'multipart/form-data');
+
                 return $data;
             }
         }
@@ -100,21 +105,24 @@ class Transport implements TransportInterface
      */
     public function request($endpoint, array $data = [], $method = 'get')
     {
-        $rawResponse = $this->rawRequest($endpoint, $data, $method);
+        $retries = 0;
 
-        if (!($this->getClient()->httpStatusCode >= 200 && $this->getClient()->httpStatusCode <= 299)) {
-            $response = json_decode($rawResponse, true);
+        do {
+            $rawResponse = $this->rawRequest($endpoint, $data, $method);
+            $httpStatusCode = $this->getClient()->httpStatusCode;
 
-            if ($response === null && json_last_error() !== JSON_ERROR_NONE && !isset($response['message'])) {
-                $response = ['message' => $this->getClient()->response];
-
-                throw new ApiException($response, $this->getClient()->httpStatusCode);
+            if ($httpStatusCode >= 200 && $httpStatusCode <= 299) {
+                return json_decode($rawResponse, true);
             }
+        } while ($httpStatusCode == self::HTTP_NETWORK_ERROR_CODE && $retries++ < self::MAX_RETRIES);
 
-            throw new ApiException($response, $this->getClient()->httpStatusCode);
+        $response = json_decode($rawResponse, true);
+
+        if (!$response) {
+            $response = ['message' => $this->getClient()->response];
         }
 
-        return json_decode($rawResponse, true);
+        throw new ApiException($response, $httpStatusCode);
     }
 
     /**
@@ -138,7 +146,7 @@ class Transport implements TransportInterface
             return null;
         }
 
-        $data = array_map(function($item) {
+        $data = array_map(function ($item) {
             return is_null($item) ? '' : $item;
         }, $data);
 
