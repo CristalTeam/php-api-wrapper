@@ -9,9 +9,9 @@ class ApiException extends Exception
 {
     protected $response;
 
-    public function __construct($response, $httpCode = 0, Throwable $previous = null)
+    public function __construct($response, $message = "", $httpCode = 0, Throwable $previous = null)
     {
-        parent::__construct('La requête à l\'API a renvoyé une '.$httpCode.' : '.$response['message'], $httpCode, $previous);
+        parent::__construct('La requête à l\'API a renvoyé une '.$httpCode.' : '.$message, $httpCode, $previous);
         $this->response = $response;
     }
 
