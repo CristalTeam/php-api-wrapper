@@ -99,8 +99,9 @@ trait HasAttributes
     /**
      * Cast an attribute to a native PHP type.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return mixed
      */
     protected function castAttribute($key, $value)
@@ -141,7 +142,8 @@ trait HasAttributes
     /**
      * Get the type of cast for a model attribute.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return string
      */
     protected function getCastType($key)
@@ -152,13 +154,14 @@ trait HasAttributes
     /**
      * Decode the given JSON back into an array or object.
      *
-     * @param  string  $value
-     * @param  bool  $asObject
+     * @param string $value
+     * @param bool   $asObject
+     *
      * @return mixed
      */
     public function fromJson($value, $asObject = false)
     {
-        return json_decode($value, ! $asObject);
+        return json_decode($value, !$asObject);
     }
 
     /**
@@ -386,7 +389,8 @@ trait HasAttributes
     /**
      * Return a timestamp as DateTime object with time set to 00:00:00.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return \DateTime
      */
     protected function asDate($value)
@@ -443,8 +447,9 @@ trait HasAttributes
     /**
      * Determine whether an attribute should be cast to a native type.
      *
-     * @param  string            $key
-     * @param  array|string|null $types
+     * @param string            $key
+     * @param array|string|null $types
+     *
      * @return bool
      */
     public function hasCast($key, $types = null)
@@ -507,7 +512,8 @@ trait HasAttributes
     /**
      * Return a timestamp as unix timestamp.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return int
      */
     protected function asTimestamp($value)
@@ -518,16 +524,18 @@ trait HasAttributes
     /**
      * Get a model instance.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return Model|null
      */
     protected function asModel($key, $value)
     {
         $className = $this->getCasts()[$key];
-        if(class_exists($className) && is_a($className, Model::class, true)) {
+        if (class_exists($className) && is_a($className, Model::class, true)) {
             return new $className($value, true);
         }
+
         return null;
     }
 
@@ -791,6 +799,18 @@ trait HasAttributes
             // if it a has one or belongs to type relationships on the models.
             elseif (is_null($value)) {
                 $relation = $value;
+            }
+            // Recursive array of Model has to be treated the same way as laravel collection
+            // with recursive calls to the toArray method of each model if it exists.
+            elseif (is_array($value)) {
+                $relation = [];
+                foreach ($value as $k => $v) {
+                    if (is_object($v) && method_exists($v, 'toArray')) {
+                        $relation[$k] = $v->toArray();
+                    } elseif (is_null($v)) {
+                        $relation[$k] = $v;
+                    }
+                }
             }
 
             // If the relation value has been set, we will set it on this attributes
