@@ -112,7 +112,7 @@ trait HasRelationships
      * @param string $ownerKey
      * @param string $relation
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function belongsTo($related, $foreignKey = null, $ownerKey = null)
     {
