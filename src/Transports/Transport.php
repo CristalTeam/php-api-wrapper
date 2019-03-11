@@ -5,6 +5,7 @@ namespace Cpro\ApiWrapper\Transports;
 use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cpro\ApiWrapper\Exceptions\ApiException;
 use Curl\Curl as CurlClient;
+use Closure;
 
 class Transport implements TransportInterface
 {
@@ -22,12 +23,28 @@ class Transport implements TransportInterface
      */
     protected $client;
 
-    public function __construct(string $entrypoint, CurlClient $client)
+    /**
+     * @var Closure
+     */
+    protected $errorHandler;
+
+    public function __construct(string $entrypoint, CurlClient $client, Closure $errorHandler = null)
     {
         $this->client = $client;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
 
+        $this->setErrorHandler(function ($response = null, $message = "", $httpStatusCode = null) {
+            throw new ApiException($response, $message, $httpStatusCode);
+        });
+
         $this->getClient()->setHeader('Content-Type', 'application/json');
+    }
+
+    public function setErrorHandler(Closure $closure)
+    {
+        $this->errorHandler = $closure;
+
+        return $this;
     }
 
     /**
@@ -118,11 +135,11 @@ class Transport implements TransportInterface
 
         $response = json_decode($rawResponse, true);
 
-        if (!$response) {
-            $response = ['message' => $this->getClient()->response];
-        }
-
-        throw new ApiException($response, $httpStatusCode);
+        return ($this->errorHandler)(
+            $response,
+            $response['message'] ?? 'Unknown error message',
+            $httpStatusCode
+        );
     }
 
     /**
