@@ -556,7 +556,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     protected function performInsert()
     {
-        $attributes = $this->attributes;
+        $attributes = $this->getAttributes();
         $updatedField = $this->getApi()->{'create'.ucfirst($this->getEntity())}($attributes);
         $this->fill($updatedField);
         $this->exists = true;
