@@ -28,7 +28,7 @@ class Transport implements TransportInterface
     protected $client;
 
     /**
-     * @var Closure[]
+     * @var AbstractErrorHandler[]
      */
     protected $errorHandlers = [];
 
