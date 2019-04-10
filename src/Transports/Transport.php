@@ -129,7 +129,7 @@ class Transport implements TransportInterface
 
         if ($this->getClient()->httpStatusCode == 404) {
             throw new ApiEntityNotFoundException(
-                (array)$this->getClient()->response,
+                (array) $this->getClient()->response,
                 $this->getClient()->httpStatusCode
             );
         }
