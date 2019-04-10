@@ -5,12 +5,16 @@ namespace Cpro\ApiWrapper\Transports;
 use Closure;
 use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cpro\ApiWrapper\Exceptions\ApiException;
+use Cpro\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
+use Cpro\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
 use Curl\Curl as CurlClient;
 
+/**
+ * Class Transport
+ * @package Cpro\ApiWrapper\Transports
+ */
 class Transport implements TransportInterface
 {
-    const MAX_RETRIES = 2;
-
     const HTTP_NETWORK_ERROR_CODE = 0;
 
     /**
@@ -24,37 +28,41 @@ class Transport implements TransportInterface
     protected $client;
 
     /**
-     * @var Closure
+     * @var Closure[]
      */
-    protected $errorHandler;
+    protected $errorHandlers = [];
 
+    /**
+     * Transport constructor.
+     *
+     * @param string $entrypoint
+     * @param CurlClient $client
+     * @param Closure|null $errorHandler
+     */
     public function __construct(string $entrypoint, CurlClient $client, Closure $errorHandler = null)
     {
         $this->client = $client;
-        $this->entrypoint = rtrim($entrypoint, '/').'/';
+        $this->entrypoint = rtrim($entrypoint, '/') . '/';
 
-        $this->setErrorHandler(function ($response = null, $message = "", $httpStatusCode = null) {
-            throw new ApiException($response, $message, $httpStatusCode);
-        });
+        $this->setErrorHandler(self::HTTP_NETWORK_ERROR_CODE, new NetworkErrorHandler($this));
 
         $this->getClient()->setHeader('Content-Type', 'application/json');
     }
 
-    public function setErrorHandler(Closure $closure)
+    /**
+     * Define or remove an error handler for the request.
+     * Pass null to remove an existing handler.
+     *
+     * @param int $code
+     * @param AbstractErrorHandler|null $handler
+     *
+     * @return $this
+     */
+    public function setErrorHandler(int $code, ?AbstractErrorHandler $handler)
     {
-        $this->errorHandler = $closure;
+        $this->errorHandlers[$code] = $handler;
 
         return $this;
-    }
-
-    /**
-     * Get entrypoint URL.
-     *
-     * @return string
-     */
-    public function getEntrypoint()
-    {
-        return $this->entrypoint;
     }
 
     /**
@@ -65,6 +73,32 @@ class Transport implements TransportInterface
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function request($endpoint, array $data = [], $method = 'get')
+    {
+        $rawResponse = $this->rawRequest($endpoint, $data, $method);
+        $httpStatusCode = $this->getClient()->httpStatusCode;
+        $response = json_decode($rawResponse, true);
+
+        if ($httpStatusCode >= 200 && $httpStatusCode <= 299) {
+            return $response;
+        }
+
+        $exception = new ApiException(
+            $response,
+            $response['message'] ?? $rawResponse ?? 'Unknown error message',
+            $httpStatusCode
+        );
+
+        if ($handler = $this->errorHandlers[$code]) {
+            return $handler->handle($exception, compact('endpoint', 'data', 'method'));
+        }
+
+        throw $exception;
     }
 
     /**
@@ -95,12 +129,57 @@ class Transport implements TransportInterface
 
         if ($this->getClient()->httpStatusCode == 404) {
             throw new ApiEntityNotFoundException(
-                (array) $this->getClient()->response,
+                (array)$this->getClient()->response,
                 $this->getClient()->httpStatusCode
             );
         }
 
         return $this->getClient()->rawResponse;
+    }
+
+    /**
+     * Build URL with stored entrypoint, the endpoint and data queries.
+     *
+     * @param string $endpoint
+     * @param array $data
+     *
+     * @return string
+     */
+    protected function getUrl(string $endpoint, array $data = [])
+    {
+        $url = $this->getEntrypoint() . ltrim($endpoint, '/');
+
+        return $url . $this->appendData($data);
+    }
+
+    /**
+     * Get entrypoint URL.
+     *
+     * @return string
+     */
+    public function getEntrypoint()
+    {
+        return $this->entrypoint;
+    }
+
+    /**
+     * Add request parameters to the uri.
+     *
+     * @param array $data
+     *
+     * @return string|null
+     */
+    protected function appendData(array $data = [])
+    {
+        if (!count($data)) {
+            return null;
+        }
+
+        $data = array_map(function ($item) {
+            return is_null($item) ? '' : $item;
+        }, $data);
+
+        return '?' . http_build_query($data);
     }
 
     public function encodeBody($data)
@@ -115,75 +194,5 @@ class Transport implements TransportInterface
         }
 
         return json_encode($data);
-    }
-
-    /**
-     * @param $endpoint
-     * @param array $data
-     * @param string $method
-     * @param int $retries
-     */
-    protected function unhautorizedRequest($endpoint, array $data = [], $method = 'get', int $retries = 0)
-    {
-        return;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function request($endpoint, array $data = [], $method = 'get', int $retries = 0)
-    {
-        $retries = 0;
-
-        do {
-            $rawResponse = $this->rawRequest($endpoint, $data, $method);
-            $httpStatusCode = $this->getClient()->httpStatusCode;
-
-            if ($httpStatusCode >= 200 && $httpStatusCode <= 299) {
-                return json_decode($rawResponse, true);
-            }
-        } while ($httpStatusCode == self::HTTP_NETWORK_ERROR_CODE && $retries++ < self::MAX_RETRIES);
-
-        $response = json_decode($rawResponse, true);
-
-        $result = ($this->errorHandler)(
-            $response,
-            $response['message'] ?? $rawResponse ?? 'Unknown error message',
-            $httpStatusCode
-        );
-
-        if($httpStatusCode === Response::HTTP_UNAUTHORIZED){
-            return $this->unhautorizedRequest($endpoint, $data, $method, $retries);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Build URL with stored entrypoint, the endpoint and data queries.
-     *
-     * @param string $endpoint
-     * @param array  $data
-     *
-     * @return string
-     */
-    protected function getUrl(string $endpoint, array $data = [])
-    {
-        $url = $this->getEntrypoint().ltrim($endpoint, '/');
-
-        return $url.$this->appendData($data);
-    }
-
-    protected function appendData(array $data = [])
-    {
-        if (!count($data)) {
-            return null;
-        }
-
-        $data = array_map(function ($item) {
-            return is_null($item) ? '' : $item;
-        }, $data);
-
-        return '?'.http_build_query($data);
     }
 }
