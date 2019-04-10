@@ -8,6 +8,7 @@ use Cpro\ApiWrapper\Exceptions\ApiException;
 use Cpro\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
 use Cpro\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
 use Curl\Curl as CurlClient;
+use CURLFile;
 
 /**
  * Class Transport
@@ -37,9 +38,8 @@ class Transport implements TransportInterface
      *
      * @param string $entrypoint
      * @param CurlClient $client
-     * @param Closure|null $errorHandler
      */
-    public function __construct(string $entrypoint, CurlClient $client, Closure $errorHandler = null)
+    public function __construct(string $entrypoint, CurlClient $client)
     {
         $this->client = $client;
         $this->entrypoint = rtrim($entrypoint, '/').'/';
@@ -61,6 +61,10 @@ class Transport implements TransportInterface
     public function setErrorHandler(int $code, ?AbstractErrorHandler $handler)
     {
         $this->errorHandlers[$code] = $handler;
+
+        if(is_null($handler)) {
+            unset($this->errorHandlers[$code]);
+        }
 
         return $this;
     }
@@ -182,11 +186,17 @@ class Transport implements TransportInterface
         return '?' . http_build_query($data);
     }
 
+    /**
+     * If a file is sent, use multipart header and raw data.
+     *
+     * @param $data
+     *
+     * @return false|string
+     */
     public function encodeBody($data)
     {
-        // If a file is sent, use multipart header and raw data
         foreach ($data as $value) {
-            if ($value instanceof \CURLFile) {
+            if ($value instanceof CURLFile) {
                 $this->getClient()->setHeader('Content-Type', 'multipart/form-data');
 
                 return $data;
