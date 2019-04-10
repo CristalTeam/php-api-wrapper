@@ -94,7 +94,7 @@ class Transport implements TransportInterface
             $httpStatusCode
         );
 
-        if ($handler = $this->errorHandlers[$code]) {
+        if ($handler = $this->errorHandlers[$code] ?? false) {
             return $handler->handle($exception, compact('endpoint', 'data', 'method'));
         }
 
