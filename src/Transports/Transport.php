@@ -153,7 +153,7 @@ class Transport implements TransportInterface
         );
 
         if($httpStatusCode === Response::HTTP_UNAUTHORIZED){
-            $result = $this->unhautorizedRequest($endpoint, $data, $method, $retries);
+            return $this->unhautorizedRequest($endpoint, $data, $method, $retries);
         }
 
         return $result;
