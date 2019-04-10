@@ -42,7 +42,7 @@ class Transport implements TransportInterface
     public function __construct(string $entrypoint, CurlClient $client, Closure $errorHandler = null)
     {
         $this->client = $client;
-        $this->entrypoint = rtrim($entrypoint, '/') . '/';
+        $this->entrypoint = rtrim($entrypoint, '/').'/';
 
         $this->setErrorHandler(self::HTTP_NETWORK_ERROR_CODE, new NetworkErrorHandler($this));
 
