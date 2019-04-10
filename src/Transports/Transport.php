@@ -163,7 +163,7 @@ class Transport implements TransportInterface
     }
 
     /**
-     * Add request parameters to the uri.
+     * Add request parameters to the URI.
      *
      * @param array $data
      *
