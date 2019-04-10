@@ -2,10 +2,10 @@
 
 namespace Cpro\ApiWrapper\Transports;
 
+use Closure;
 use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cpro\ApiWrapper\Exceptions\ApiException;
 use Curl\Curl as CurlClient;
-use Closure;
 
 class Transport implements TransportInterface
 {
@@ -118,9 +118,20 @@ class Transport implements TransportInterface
     }
 
     /**
+     * @param $endpoint
+     * @param array $data
+     * @param string $method
+     * @param int $retries
+     */
+    protected function unhautorizedRequest($endpoint, array $data = [], $method = 'get', int $retries = 0)
+    {
+        return;
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function request($endpoint, array $data = [], $method = 'get')
+    public function request($endpoint, array $data = [], $method = 'get', int $retries = 0)
     {
         $retries = 0;
 
@@ -135,11 +146,17 @@ class Transport implements TransportInterface
 
         $response = json_decode($rawResponse, true);
 
-        return ($this->errorHandler)(
+        $result = ($this->errorHandler)(
             $response,
-            $response['message'] ?? 'Unknown error message',
+            $response['message'] ?? $rawResponse ?? 'Unknown error message',
             $httpStatusCode
         );
+
+        if($httpStatusCode === Response::HTTP_UNAUTHORIZED){
+            $result = $this->unhautorizedRequest($endpoint, $data, $method, $retries);
+        }
+
+        return $result;
     }
 
     /**
