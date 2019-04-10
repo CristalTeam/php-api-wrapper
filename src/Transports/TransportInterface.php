@@ -3,7 +3,7 @@
 namespace Cpro\ApiWrapper\Transports;
 
 /**
- * Interface TransportInterface
+ * Interface TransportInterface.
  * @package Cpro\ApiWrapper\Transports
  */
 interface TransportInterface
