@@ -18,7 +18,12 @@ class NetworkErrorHandler extends AbstractErrorHandler
         if ($this->tries < $this->getMaxTries()) {
             $this->tries++;
 
-            $return = $this->transport->request(...$requestArguments);
+            $return = $this->transport->request(
+                $requestArguments['endpoint'],
+                $requestArguments['data'],
+                $requestArguments['method']
+            );
+
             $this->tries = 0;
             return $return;
         }
