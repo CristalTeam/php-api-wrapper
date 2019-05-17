@@ -7,6 +7,7 @@ use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cpro\ApiWrapper\Exceptions\ApiException;
 use Cpro\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
 use Cpro\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
+use Cpro\ApiWrapper\Exceptions\Handlers\NotFoundErrorHandler;
 use Curl\Curl as CurlClient;
 use CURLFile;
 
@@ -131,13 +132,6 @@ class Transport implements TransportInterface
                 $url = $this->getUrl($endpoint);
                 $this->getClient()->delete($url, $this->encodeBody($data));
                 break;
-        }
-
-        if ($this->getClient()->httpStatusCode == 404) {
-            throw new ApiEntityNotFoundException(
-                (array) $this->getClient()->response,
-                $this->getClient()->httpStatusCode
-            );
         }
 
         return $this->getClient()->rawResponse;
