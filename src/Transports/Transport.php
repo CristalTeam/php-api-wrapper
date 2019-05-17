@@ -17,6 +17,7 @@ use CURLFile;
 class Transport implements TransportInterface
 {
     const HTTP_NETWORK_ERROR_CODE = 0;
+    const HTTP_NOT_FOUND_ERROR_CODE = 404;
 
     /**
      * @var null|string
@@ -45,6 +46,7 @@ class Transport implements TransportInterface
         $this->entrypoint = rtrim($entrypoint, '/').'/';
 
         $this->setErrorHandler(self::HTTP_NETWORK_ERROR_CODE, new NetworkErrorHandler($this));
+        $this->setErrorHandler(self::HTTP_NOT_FOUND_ERROR_CODE, new NotFoundErrorHandler($this));
 
         $this->getClient()->setHeader('Content-Type', 'application/json');
     }

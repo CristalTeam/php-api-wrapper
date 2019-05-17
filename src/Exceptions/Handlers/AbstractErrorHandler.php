@@ -3,7 +3,7 @@
 namespace Cpro\ApiWrapper\Exceptions\Handlers;
 
 use Cpro\ApiWrapper\Exceptions\ApiException;
-use Cpro\ApiWrapper\Transports\Transport;
+use Cpro\ApiWrapper\Transports\TransportInterface;
 
 /**
  * Class AbstractErrorHandler
@@ -17,7 +17,7 @@ abstract class AbstractErrorHandler
     public $tries = 0;
 
     /**
-     * @var Transport
+     * @var TransportInterface
      */
     protected $transport;
 
@@ -28,9 +28,9 @@ abstract class AbstractErrorHandler
 
     /**
      * AbstractErrorHandler constructor.
-     * @param Transport $transport
+     * @param TransportInterface $transport
      */
-    public function __construct(Transport $transport)
+    public function __construct(TransportInterface $transport)
     {
         $this->transport = $transport;
     }
