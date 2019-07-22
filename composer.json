@@ -10,6 +10,10 @@
   "require" : {
     "php-curl-class/php-curl-class": "^8.3"
   },
+  "suggest": {
+    "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
+    "laravel/framwork":  "To integrate Laravel Collection, Pagination and Eloquent relations with your models."
+  },
   "autoload": {
     "psr-4": {
       "Cpro\\ApiWrapper\\": "src"
