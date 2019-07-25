@@ -1,6 +1,6 @@
 <?php
 
-namespace Cristal\ApiWrapper\Decorators;
+namespace Cpro\ApiWrapper\Bridges\BarryvdhLaravelDebugbar;
 
 use Barryvdh\Debugbar\LaravelDebugbar;
 use Cpro\ApiWrapper\Exceptions\ApiException;
