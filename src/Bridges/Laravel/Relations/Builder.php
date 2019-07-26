@@ -40,6 +40,6 @@ class Builder extends CoreBuilder
      */
     public function instanciateModels($data)
     {
-        return parent::instanciateModels($data['hydra:member'] ?? $data['data'] ?? null);
+        return parent::instanciateModels($data['hydra:member'] ?? $data['data'] ?? $data ?? null);
     }
 }
