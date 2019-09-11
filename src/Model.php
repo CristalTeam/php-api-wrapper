@@ -101,7 +101,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     public function getEntities(): string
     {
