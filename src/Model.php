@@ -100,6 +100,18 @@ abstract class Model implements ArrayAccess, JsonSerializable
         return $this->entity;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getEntities(): ?string
+    {
+        if (substr($this->entity, -1) === 'y') {
+            return rtrim($this->entity, 'y').'ies';
+        }
+
+        return rtrim($this->entity, 's').'s';
+    }
+
     public function __construct($fill = [], $exists = false)
     {
         $this->exists = $exists;

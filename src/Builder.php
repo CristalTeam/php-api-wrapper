@@ -239,7 +239,7 @@ class Builder
     {
         $instance = $this->getModel();
         try {
-            return $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+            return $instance->getApi()->{'get'.ucfirst($instance->getEntities())}($this->getQuery());
         } catch (ApiEntityNotFoundException $e) {
             return [];
         }
@@ -261,7 +261,7 @@ class Builder
         $this->where(['limit' => $perPage, $pageName => $page]);
 
         $instance = $this->getModel();
-        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntity()).'s'}($this->getQuery());
+        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntities())}($this->getQuery());
 
         $entities['data'] = $this->instanciateModels($entities);
 

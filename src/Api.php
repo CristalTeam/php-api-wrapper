@@ -53,15 +53,15 @@ class Api
             return $this->$name(...$arguments);
         }
 
-        preg_match('/^(get|create|update|delete)([\w-\_\/]+?)(s|)$/', $name, $matches);
+        preg_match('/^(get|create|update|delete)([\w-\_\/]+?)$/', $name, $matches);
 
         $endpoint = strtolower($matches[2]);
-        if ($matches[1] === 'get') {
-            if ($matches[3] === 's') {
-                return $this->findAll($endpoint, ...$arguments);
+        if ('get' === $matches[1]) {
+            if (\count($arguments) >= 1 && !is_array([0])) { // id and array arguments
+                return $this->findOne($endpoint, ...$arguments);
             }
 
-            return $this->findOne($endpoint, ...$arguments);
+            return $this->findAll($endpoint, ...$arguments);
         }
 
         return $this->{$matches[1]}($endpoint, ...$arguments);
@@ -77,7 +77,7 @@ class Api
      */
     protected function findAll(string $endpoint, array $filters = []): array
     {
-        $key = md5(__FUNCTION__.static::pluralize($endpoint).json_encode($filters));
+        $key = md5(__FUNCTION__.$endpoint.json_encode($filters));
 
         if ($this->hasCache($key)) {
             return $this->getCache($key);
@@ -85,7 +85,7 @@ class Api
 
         return $this->setCache(
             $key,
-            $this->transport->request('/'.static::pluralize($endpoint), $filters) ?? []
+            $this->getTransport()->request('/'.$endpoint, $filters) ?? []
         );
     }
 
@@ -106,7 +106,7 @@ class Api
             return $this->getCache($key);
         }
 
-        return $this->transport->request($uri, $filters) ?? [];
+        return $this->getTransport()->request($uri, $filters) ?? [];
     }
 
     /**
@@ -122,7 +122,7 @@ class Api
     {
         $key = $endpoint.'/'.$id.'?';
 
-        return $this->setCache($key, $this->transport->request('/'.$endpoint.'/'.$id, $attributes, 'put') ?? []);
+        return $this->setCache($key, $this->getTransport()->request('/'.$endpoint.'/'.$id, $attributes, 'put') ?? []);
     }
 
     /**
@@ -135,7 +135,7 @@ class Api
      */
     protected function create(string $endpoint, $attributes): array
     {
-        return $this->transport->request('/'.$endpoint, $attributes, 'post') ?? [];
+        return $this->getTransport()->request('/'.$endpoint, $attributes, 'post') ?? [];
     }
 
     /**
@@ -151,11 +151,6 @@ class Api
         $key = $endpoint.'/'.$id.'?';
         $this->deleteCache($key);
 
-        return $this->transport->request('/'.$endpoint.'/'.$id, [], 'delete') ?? [];
-    }
-
-    public static function pluralize($endpoint): string
-    {
-        return $endpoint.'s';
+        return $this->getTransport()->request('/'.$endpoint.'/'.$id, [], 'delete') ?? [];
     }
 }
