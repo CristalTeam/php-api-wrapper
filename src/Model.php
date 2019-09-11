@@ -103,7 +103,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * @return string|null
      */
-    public function getEntities(): ?string
+    public function getEntities(): string
     {
         if (substr($this->entity, -1) === 'y') {
             return rtrim($this->entity, 'y').'ies';
