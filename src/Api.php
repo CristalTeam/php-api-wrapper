@@ -57,7 +57,7 @@ class Api
 
         $endpoint = strtolower($matches[2]);
         if ('get' === $matches[1]) {
-            if (\count($arguments) >= 1 && !is_array([0])) { // id and array arguments
+            if (\count($arguments) >= 1 && !is_array($matches[0])) { // id and array arguments
                 return $this->findOne($endpoint, ...$arguments);
             }
 
