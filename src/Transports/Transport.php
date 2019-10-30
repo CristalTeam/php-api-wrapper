@@ -121,8 +121,11 @@ class Transport implements TransportInterface
                 $this->getClient()->get($url);
                 break;
             case 'post':
-                $url = $this->getUrl($endpoint);
-                $this->getClient()->post($url, $this->encodeBody($data));
+                $this->getClient()->post(
+                    $this->getUrl($endpoint),
+                    $this->encodeBody($data),
+                    (version_compare(PHP_VERSION, '5.5.11') < 0) || defined('HHVM_VERSION')
+                );
                 break;
             case 'put':
                 $url = $this->getUrl($endpoint);
