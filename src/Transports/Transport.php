@@ -8,6 +8,7 @@ use Cpro\ApiWrapper\Exceptions\ApiException;
 use Cpro\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
 use Cpro\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
 use Cpro\ApiWrapper\Exceptions\Handlers\NotFoundErrorHandler;
+use Cpro\ApiWrapper\MultipartParam;
 use Curl\Curl as CurlClient;
 use CURLFile;
 
@@ -19,6 +20,8 @@ class Transport implements TransportInterface
 {
     const HTTP_NETWORK_ERROR_CODE = 0;
     const HTTP_NOT_FOUND_ERROR_CODE = 404;
+
+    const JSON_MIME_TYPE = 'application/json';
 
     /**
      * @var null|string
@@ -48,8 +51,6 @@ class Transport implements TransportInterface
 
         $this->setErrorHandler(self::HTTP_NETWORK_ERROR_CODE, new NetworkErrorHandler($this));
         $this->setErrorHandler(self::HTTP_NOT_FOUND_ERROR_CODE, new NotFoundErrorHandler($this));
-
-        $this->getClient()->setHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -65,7 +66,7 @@ class Transport implements TransportInterface
     {
         $this->errorHandlers[$code] = $handler;
 
-        if(is_null($handler)) {
+        if (is_null($handler)) {
             unset($this->errorHandlers[$code]);
         }
 
@@ -188,7 +189,7 @@ class Transport implements TransportInterface
     /**
      * If a file is sent, use multipart header and raw data.
      *
-     * @param $data
+     * @param interable $data
      *
      * @return false|string
      */
@@ -200,8 +201,22 @@ class Transport implements TransportInterface
 
                 return $data;
             }
+            if ($value instanceof MultipartParam) {
+                $delimiter = '----WebKitFormBoundary'.uniqid();
+
+                $this->getClient()->setHeader('Content-Type', 'multipart/form-data; boundary=' . $delimiter);
+                return join(array_map(function ($param, $name) use ($delimiter) {
+                    if (!$param instanceof MultipartParam) {
+                        $param = new MultipartParam($param);
+                    }
+
+                    return $param->render($name, $delimiter);
+                }, $data, array_keys($data))).'--'.$delimiter.'--';
+
+            }
         }
 
+        $this->getClient()->setHeader('Content-Type', static::JSON_MIME_TYPE);
         return json_encode($data);
     }
 }

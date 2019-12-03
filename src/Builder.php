@@ -8,6 +8,11 @@ class Builder
 {
     const MAX_RESULTS = 9999;
 
+    const PAGINATION_MAPPING_PAGE = 'page';
+    const PAGINATION_MAPPING_TOTAL = 'total';
+    const PAGINATION_MAPPING_PER_PAGE = 'per_page';
+    const PAGINATION_MAPPING_CURRENT_PAGE = 'current_page';
+
     /**
      * @var array
      */
@@ -256,15 +261,19 @@ class Builder
         }, $data);
     }
 
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate(?int $perPage = null, ?int $page = 1)
     {
-        $this->where(['limit' => $perPage, $pageName => $page]);
+        $this->limit($perPage);
+        $this->where([static::PAGINATION_MAPPING_PAGE => $page]);
 
         $instance = $this->getModel();
-        $entities = $instance->getApi()->{'get'.ucfirst($instance->getEntities())}($this->getQuery());
+        $entities = $this->raw();
 
-        $entities['data'] = $this->instanciateModels($entities);
-
-        return $entities;
+        return [
+            'data' => $this->instanciateModels($entities),
+            'total' => $entities[static::PAGINATION_MAPPING_TOTAL] ?? null,
+            'per_page' => $entities[static::PAGINATION_MAPPING_PER_PAGE] ?? $perPage,
+            'current_page' => $entities[static::PAGINATION_MAPPING_CURRENT_PAGE] ?? $page
+        ];
     }
 }

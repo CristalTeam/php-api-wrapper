@@ -22,9 +22,9 @@ class Builder extends CoreBuilder
      * @param null $page
      * @return LengthAwarePaginator
      */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate(?int $perPage = null, ?int $page = 1)
     {
-        $entities = parent::paginate($perPage, $columns, $pageName, $page);
+        $entities = parent::paginate($perPage, $page);
 
         return new LengthAwarePaginator(
             $entities['data'],
