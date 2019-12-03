@@ -150,12 +150,16 @@ class DebugbarTransportDecorator implements TransportInterface
     {
         stop_measure($this->getName());
 
+        if (!$response) {
+            $response = $exception ? $exception->getResponse() : null;
+        }
+
         $this->getDebugbar()
             ->getCollector(self::DEBUG_COLLECTOR)
             ->addMessage(
                 (object) array_filter([
                     'data_request' => $data,
-                    'response' => $response ?? $exception->getResponse(),
+                    'response' => $response,
                     'exception' => $exception,
                 ]),
                 sprintf(
