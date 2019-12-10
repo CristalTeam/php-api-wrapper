@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use LogicException;
 
-trait ModelTrait
+trait HasEloquentRelations
 {
     /**
      * Define a one-to-many relationship.

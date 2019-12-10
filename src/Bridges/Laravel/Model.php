@@ -9,5 +9,5 @@ use Illuminate\Contracts\Support\Jsonable;
 
 class Model extends CoreModel implements Arrayable, Jsonable, UrlRoutable
 {
-    use ModelTrait;
+    use HasEloquentRelations;
 }
