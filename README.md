@@ -16,6 +16,7 @@ Some implementations already exists into the namespace `Cpro\ApiWrapper\Transpor
 - `Transport` Generic JSON API without authentication
 - `Bearer` Extends of `Transport` supports bearers tokens
 - `Basic` Extends of `Transport` supports basic auth
+- `OAuth2` Extends of `Transport` supports OAuth2 ([see doc](docs/transports/oauth2.md))
 
 Example of usage :
 
