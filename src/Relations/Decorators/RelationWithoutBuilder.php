@@ -2,6 +2,7 @@
 
 namespace Cpro\ApiWrapper\Relations\Decorators;
 
+use Cpro\ApiWrapper\Relations\HasMany;
 use Cpro\ApiWrapper\Relations\RelationInterface;
 
 class RelationWithoutBuilder implements RelationInterface
@@ -24,7 +25,7 @@ class RelationWithoutBuilder implements RelationInterface
      */
     public function getResults()
     {
-        return null;
+        return $this->relation instanceof HasMany ? [] : null;
     }
 
     /**
