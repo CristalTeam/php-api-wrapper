@@ -7,8 +7,6 @@ use Cristal\ApiWrapper\Transports\TransportInterface;
 
 /**
  * Class Api.
- *
- * @throws Cristal\ApiWrapper\Exceptions\ApiException
  */
 class Api
 {

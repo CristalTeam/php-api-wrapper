@@ -96,47 +96,9 @@ class CustomWraper extends Api
 }
 ```
 
-# 3. Work with Models
+# 3. Chose your stack
 
-First, you must create a link between Api Wrapper instance and your model :
+- [Work without Laravel or Symfony](docs/work-standalone.md)
+- [Work with Laravel](docs/work-with-laravel.md)
+- [Work with Symfony (and optionally Api Platform)](docs/work-with-symfony.md)
 
-```php
-<?php
-
-use Cristal\ApiWrapper\Model;
-use Curl\Curl;
-
-$transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
-$api = new Api($transport);
-Model::setApi($api);
-
-```
-If your are working on Laravel, implement it on your ServiceProvider.
-
-Next, create a model that represente your entity :
-
-```php
-<?php
-
-use Cristal\ApiWrapper\Model;
-
-class User extends Model
-{
-    // This property is directly use and pluralize (ex : getUsers)
-    // on the API Wrapper.
-    protected $entity = 'user';
-}
-```
-
-Congratulation, you are quite ready to use your implementation like Eloquent :
-
-```php
-<?php
-
-$activedUser = User::where(['active' => true]);
-
-foreach($activedUser as $user){
-    $user->active = false;
-    $user->save();
-}
-```
