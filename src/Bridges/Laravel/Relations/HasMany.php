@@ -1,9 +1,9 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel\Relations;
+namespace Cristal\ApiWrapper\Bridges\Laravel\Relations;
 
-use Cpro\ApiWrapper\Model;
-use Cpro\ApiWrapper\Relations\HasMany as CoreHasMany;
+use Cristal\ApiWrapper\Model;
+use Cristal\ApiWrapper\Relations\HasMany as CoreHasMany;
 use Illuminate\Database\Eloquent\Model as ModelEloquent;
 
 class HasMany extends CoreHasMany

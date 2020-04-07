@@ -1,14 +1,14 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cristal\ApiWrapper;
 
 use ArrayAccess;
-use Cpro\ApiWrapper\Concerns\HasAttributes;
-use Cpro\ApiWrapper\Concerns\HasRelationships;
-use Cpro\ApiWrapper\Concerns\HasGlobalScopes;
-use Cpro\ApiWrapper\Concerns\HidesAttributes;
-use Cpro\ApiWrapper\Exceptions\ApiException;
-use Cpro\ApiWrapper\Exceptions\MissingApiException;
+use Cristal\ApiWrapper\Concerns\HasAttributes;
+use Cristal\ApiWrapper\Concerns\HasRelationships;
+use Cristal\ApiWrapper\Concerns\HasGlobalScopes;
+use Cristal\ApiWrapper\Concerns\HidesAttributes;
+use Cristal\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Exceptions\MissingApiException;
 use Exception;
 use JsonSerializable;
 

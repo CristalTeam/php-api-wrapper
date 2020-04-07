@@ -1,20 +1,20 @@
 <?php
 
-namespace Cpro\ApiWrapper\Transports;
+namespace Cristal\ApiWrapper\Transports;
 
 use Closure;
-use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
-use Cpro\ApiWrapper\Exceptions\ApiException;
-use Cpro\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
-use Cpro\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
-use Cpro\ApiWrapper\Exceptions\Handlers\NotFoundErrorHandler;
-use Cpro\ApiWrapper\MultipartParam;
+use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+use Cristal\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
+use Cristal\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
+use Cristal\ApiWrapper\Exceptions\Handlers\NotFoundErrorHandler;
+use Cristal\ApiWrapper\MultipartParam;
 use Curl\Curl as CurlClient;
 use CURLFile;
 
 /**
  * Class Transport
- * @package Cpro\ApiWrapper\Transports
+ * @package Cristal\ApiWrapper\Transports
  */
 class Transport implements TransportInterface
 {

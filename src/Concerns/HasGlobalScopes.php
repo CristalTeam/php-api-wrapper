@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper\Concerns;
+namespace Cristal\ApiWrapper\Concerns;
 
 trait HasGlobalScopes
 {

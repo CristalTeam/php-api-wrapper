@@ -1,9 +1,9 @@
 <?php
 
-namespace Cpro\ApiWrapper\Tests;
+namespace Cristal\ApiWrapper\Tests;
 
-use Cpro\ApiWrapper\Api;
-use Cpro\ApiWrapper\Transports\TransportInterface;
+use Cristal\ApiWrapper\Api;
+use Cristal\ApiWrapper\Transports\TransportInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 

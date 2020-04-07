@@ -1,10 +1,10 @@
 <?php
 
-namespace Cpro\ApiWrapper\Concerns;
+namespace Cristal\ApiWrapper\Concerns;
 
-use Cpro\ApiWrapper\Relations\BelongsTo;
-use Cpro\ApiWrapper\Relations\HasOne;
-use Cpro\ApiWrapper\Relations\HasMany;
+use Cristal\ApiWrapper\Relations\BelongsTo;
+use Cristal\ApiWrapper\Relations\HasOne;
+use Cristal\ApiWrapper\Relations\HasMany;
 
 trait HasRelationships
 {

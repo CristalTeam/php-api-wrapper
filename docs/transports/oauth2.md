@@ -10,7 +10,7 @@ Example of use:
 
 ```php
 <?php
-use Cpro\ApiWrapper\Transports\OAuth2;
+use Cristal\ApiWrapper\Transports\OAuth2;
 use Illuminate\Cache\Repository as Cache;
 use Curl\Curl;
 use League\OAuth2\Client\Provider\GenericProvider;

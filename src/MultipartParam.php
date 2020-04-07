@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cristal\ApiWrapper;
 
 class MultipartParam
 {

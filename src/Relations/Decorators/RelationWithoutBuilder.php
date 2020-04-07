@@ -1,9 +1,9 @@
 <?php
 
-namespace Cpro\ApiWrapper\Relations\Decorators;
+namespace Cristal\ApiWrapper\Relations\Decorators;
 
-use Cpro\ApiWrapper\Relations\HasMany;
-use Cpro\ApiWrapper\Relations\RelationInterface;
+use Cristal\ApiWrapper\Relations\HasMany;
+use Cristal\ApiWrapper\Relations\RelationInterface;
 
 class RelationWithoutBuilder implements RelationInterface
 {

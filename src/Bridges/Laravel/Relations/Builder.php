@@ -1,8 +1,8 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel\Relations;
+namespace Cristal\ApiWrapper\Bridges\Laravel\Relations;
 
-use Cpro\ApiWrapper\Builder as CoreBuilder;
+use Cristal\ApiWrapper\Builder as CoreBuilder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class Builder extends CoreBuilder

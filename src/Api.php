@@ -1,14 +1,14 @@
 <?php
 
-namespace Cpro\ApiWrapper;
+namespace Cristal\ApiWrapper;
 
-use Cpro\ApiWrapper\Concerns\HasCache;
-use Cpro\ApiWrapper\Transports\TransportInterface;
+use Cristal\ApiWrapper\Concerns\HasCache;
+use Cristal\ApiWrapper\Transports\TransportInterface;
 
 /**
  * Class Api.
  *
- * @throws Cpro\ApiWrapper\Exceptions\ApiException
+ * @throws Cristal\ApiWrapper\Exceptions\ApiException
  */
 class Api
 {

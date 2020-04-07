@@ -1,8 +1,8 @@
 <?php
 
-namespace Cpro\ApiWrapper\Transports;
+namespace Cristal\ApiWrapper\Transports;
 
-use Cpro\ApiWrapper\Transports\Transport as TransportCore;
+use Cristal\ApiWrapper\Transports\Transport as TransportCore;
 use Curl\Curl;
 use Illuminate\Contracts\Cache\Repository;
 use League\OAuth2\Client\Provider\AbstractProvider;

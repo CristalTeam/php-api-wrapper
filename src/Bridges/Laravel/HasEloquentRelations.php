@@ -1,11 +1,11 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel;
+namespace Cristal\ApiWrapper\Bridges\Laravel;
 
-use Cpro\ApiWrapper\Relations\RelationInterface;
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\HasOne as BridgeHasOne;
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\HasMany as BridgeHasMany;
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\Builder as BridgeBuilder;
+use Cristal\ApiWrapper\Relations\RelationInterface;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasOne as BridgeHasOne;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasMany as BridgeHasMany;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\Builder as BridgeBuilder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;

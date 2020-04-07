@@ -1,10 +1,10 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\BarryvdhLaravelDebugbar;
+namespace Cristal\ApiWrapper\Bridges\BarryvdhLaravelDebugbar;
 
 use Barryvdh\Debugbar\LaravelDebugbar;
-use Cpro\ApiWrapper\Exceptions\ApiException;
-use Cpro\ApiWrapper\Transports\TransportInterface;
+use Cristal\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Transports\TransportInterface;
 use DebugBar\DebugBarException;
 
 /**

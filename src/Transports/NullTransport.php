@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper\Transports;
+namespace Cristal\ApiWrapper\Transports;
 
 class NullTransport implements TransportInterface
 {

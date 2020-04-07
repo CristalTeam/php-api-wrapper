@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper\Relations;
+namespace Cristal\ApiWrapper\Relations;
 
 interface RelationInterface
 {

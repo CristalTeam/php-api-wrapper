@@ -1,13 +1,13 @@
 <?php
 
-namespace Cpro\ApiWrapper\Exceptions\Handlers;
+namespace Cristal\ApiWrapper\Exceptions\Handlers;
 
-use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
-use Cpro\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+use Cristal\ApiWrapper\Exceptions\ApiException;
 
 /**
  * Class NetworkErrorHandler
- * @package Cpro\ApiWrapper\Exceptions
+ * @package Cristal\ApiWrapper\Exceptions
  */
 class NotFoundErrorHandler extends AbstractErrorHandler
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Cpro\ApiWrapper\Exceptions\Handlers;
+namespace Cristal\ApiWrapper\Exceptions\Handlers;
 
-use Cpro\ApiWrapper\Exceptions\ApiException;
-use Cpro\ApiWrapper\Transports\TransportInterface;
+use Cristal\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Transports\TransportInterface;
 
 /**
  * Class AbstractErrorHandler
- * @package Cpro\ApiWrapper\Exceptions
+ * @package Cristal\ApiWrapper\Exceptions
  */
 abstract class AbstractErrorHandler
 {

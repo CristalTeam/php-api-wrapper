@@ -1,10 +1,10 @@
 <?php
 
-namespace Cpro\ApiWrapper\Concerns;
+namespace Cristal\ApiWrapper\Concerns;
 
-use Cpro\ApiWrapper\Model;
+use Cristal\ApiWrapper\Model;
 use LogicException;
-use Cpro\ApiWrapper\Relations\RelationInterface;
+use Cristal\ApiWrapper\Relations\RelationInterface;
 
 trait HasAttributes
 {

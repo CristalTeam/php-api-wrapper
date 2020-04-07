@@ -11,7 +11,7 @@ PHP API Wrapper is a Laravel Eloquent like, built to work with APIs. The integra
 The Transport is an implementation of `TransportInterface`, it manages the API Autentication, 
 returns desialized data, and manage HTTP errors with `ApiException` and childs (see `src/Exceptions`).
 
-Some implementations already exists into the namespace `Cpro\ApiWrapper\Transports` :
+Some implementations already exists into the namespace `Cristal\ApiWrapper\Transports` :
 
 - `Transport` Generic JSON API without authentication
 - `Bearer` Extends of `Transport` supports bearers tokens
@@ -23,7 +23,7 @@ Example of usage :
 ```php
 <?php
 
-use Cpro\ApiWrapper\Transports\Basic;
+use Cristal\ApiWrapper\Transports\Basic;
 use Curl\Curl;
 
 $transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
@@ -76,7 +76,7 @@ class CustomWraper
 }
 ```
 
-This way can be very redundant, which is why you can extend from `Cpro\ApiWrapper\Api`.
+This way can be very redundant, which is why you can extend from `Cristal\ApiWrapper\Api`.
 This implementation forward methods with magics `__call` (for exemple with User) :
 
 - `getUser(...)` to the method `findOne('user', ...)`
@@ -103,7 +103,7 @@ First, you must create a link between Api Wrapper instance and your model :
 ```php
 <?php
 
-use Cpro\ApiWrapper\Model;
+use Cristal\ApiWrapper\Model;
 use Curl\Curl;
 
 $transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
@@ -118,7 +118,7 @@ Next, create a model that represente your entity :
 ```php
 <?php
 
-use Cpro\ApiWrapper\Model;
+use Cristal\ApiWrapper\Model;
 
 class User extends Model
 {

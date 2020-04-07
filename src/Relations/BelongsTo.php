@@ -1,8 +1,8 @@
 <?php
 
-namespace Cpro\ApiWrapper\Relations;
+namespace Cristal\ApiWrapper\Relations;
 
-use Cpro\ApiWrapper\Model;
+use Cristal\ApiWrapper\Model;
 
 class BelongsTo extends Relation
 {

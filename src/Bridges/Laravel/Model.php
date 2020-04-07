@@ -1,8 +1,8 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel;
+namespace Cristal\ApiWrapper\Bridges\Laravel;
 
-use Cpro\ApiWrapper\Model as CoreModel;
+use Cristal\ApiWrapper\Model as CoreModel;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;

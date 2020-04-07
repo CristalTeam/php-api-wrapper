@@ -1,9 +1,9 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel\Relations;
+namespace Cristal\ApiWrapper\Bridges\Laravel\Relations;
 
-use Cpro\ApiWrapper\Model;
-use Cpro\ApiWrapper\Relations\BelongsTo as CoreBelongsTo;
+use Cristal\ApiWrapper\Model;
+use Cristal\ApiWrapper\Relations\BelongsTo as CoreBelongsTo;
 use Illuminate\Database\Eloquent\Model as ModelEloquent;
 use LogicException;
 

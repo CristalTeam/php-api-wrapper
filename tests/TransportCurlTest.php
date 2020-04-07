@@ -1,10 +1,10 @@
 <?php
 
-namespace Cpro\ApiWrapper\Tests;
+namespace Cristal\ApiWrapper\Tests;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Cpro\ApiWrapper\Transports\Bearer;
+use Cristal\ApiWrapper\Transports\Bearer;
 
 class TransportCurlTest extends TestCase
 {

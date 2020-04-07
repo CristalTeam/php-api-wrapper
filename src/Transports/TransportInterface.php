@@ -1,10 +1,10 @@
 <?php
 
-namespace Cpro\ApiWrapper\Transports;
+namespace Cristal\ApiWrapper\Transports;
 
 /**
  * Interface TransportInterface.
- * @package Cpro\ApiWrapper\Transports
+ * @package Cristal\ApiWrapper\Transports
  */
 interface TransportInterface
 {

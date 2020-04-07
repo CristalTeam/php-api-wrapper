@@ -1,6 +1,6 @@
 <?php
 
-namespace Cpro\ApiWrapper\Exceptions;
+namespace Cristal\ApiWrapper\Exceptions;
 
 use Throwable;
 

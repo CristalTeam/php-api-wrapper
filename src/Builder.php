@@ -1,8 +1,8 @@
 <?php
 
-namespace  Cpro\ApiWrapper;
+namespace  Cristal\ApiWrapper;
 
-use Cpro\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 
 class Builder
 {
@@ -239,7 +239,7 @@ class Builder
 
         return $this->instanciateModels($entities);
     }
-    
+
     public function raw()
     {
         $instance = $this->getModel();

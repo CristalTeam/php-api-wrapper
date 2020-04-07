@@ -1,13 +1,13 @@
 <?php
 
-namespace Cpro\ApiWrapper\Bridges\Laravel;
+namespace Cristal\ApiWrapper\Bridges\Laravel;
 
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\BelongsTo as ApiBelongsTo;
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\HasMany as ApiHasMany;
-use Cpro\ApiWrapper\Bridges\Laravel\Relations\HasOne as ApiHasOne;
-use Cpro\ApiWrapper\Model as ModelApi;
-use Cpro\ApiWrapper\Relations\BelongsTo;
-use Cpro\ApiWrapper\Relations\Relation as RelationApi;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\BelongsTo as ApiBelongsTo;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasMany as ApiHasMany;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasOne as ApiHasOne;
+use Cristal\ApiWrapper\Model as ModelApi;
+use Cristal\ApiWrapper\Relations\BelongsTo;
+use Cristal\ApiWrapper\Relations\Relation as RelationApi;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
