@@ -1,12 +1,25 @@
 # PHP API Wrapper
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/cristal/php-api-wrapper.svg?style=flat-square)](https://packagist.org/packages/cristal/php-api-wrapper)
+[![GitHub issues](https://img.shields.io/github/issues/cristalTeam/php-api-wrapper.svg?style=flat-square)](https://github.com/cristalTeam/php-api-wrapper/issues)
+[![GitHub license](https://img.shields.io/github/license/cristalTeam/php-api-wrapper.svg?style=flat-square)](https://github.com/cristalTeam/php-api-wrapper/blob/master/LICENSE)
+
+
+## Installation using Composer
+
+```bash
+composer require cristal/php-api-wrapper
+```
+
+## Usage
+
 PHP API Wrapper is a Laravel Eloquent like, built to work with APIs. The integration of each API consists of three steps:
 
 - The Transport
 - The Wrapper
 - The Models and Builder
 
-## 1. The Transport
+### 1. The Transport
 
 The Transport is an implementation of `TransportInterface`, it manages the API Autentication, 
 returns desialized data, and manage HTTP errors with `ApiException` and childs (see `src/Exceptions`).
@@ -31,7 +44,7 @@ $users = $transport->request('/users');
 
 ```
 
-## 2. The Wrapper
+### 2. The Wrapper
 
 A wrapper is a standalone class that must follow a specific implementation.
 For example, consider a User (create, read, delete and update), implementation. Here's what your wrapper should look like :
@@ -96,7 +109,7 @@ class CustomWraper extends Api
 }
 ```
 
-# 3. Chose your stack
+## 3. Chose your stack
 
 - [Work without Laravel or Symfony](docs/work-standalone.md)
 - [Work with Laravel](docs/work-with-laravel.md)

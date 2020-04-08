@@ -46,9 +46,9 @@ Congratulation, you are quite ready to use your implementation like Eloquent :
 ```php
 <?php
 
-$activedUser = User::where(['active' => true])->get();
+$activedUsers = User::where(['active' => true])->get();
 
-foreach($activedUser as $user){
+foreach($activedUsers as $user){
     $user->active = false;
     $user->save();
 }

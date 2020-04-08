@@ -12,7 +12,10 @@
   },
   "suggest": {
     "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
-    "laravel/framework":  "To integrate Laravel Collection, Pagination and Eloquent relations with your models."
+    "laravel/framework":  "To integrate Laravel Collection, Pagination and Eloquent relations with your models.",
+    "symfony/symfony" : "To integrate a ManagerRegistry, a Paginator and support serialization with your entities.",
+    "api-platform/core" : "To integrate a DataProvider and support the Paginator of the Api Platform in addition to the support of Symfony.",
+    "league/oauth2-client" : "To support OAuth2 request Transport."
   },
   "autoload": {
     "psr-4": {
