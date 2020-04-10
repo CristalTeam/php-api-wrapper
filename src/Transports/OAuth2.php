@@ -4,9 +4,9 @@ namespace Cristal\ApiWrapper\Transports;
 
 use Cristal\ApiWrapper\Transports\Transport as TransportCore;
 use Curl\Curl;
-use Illuminate\Contracts\Cache\Repository;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Psr\Cache\CacheItemPoolInterface;
 
 class OAuth2 extends TransportCore
 {
@@ -16,9 +16,14 @@ class OAuth2 extends TransportCore
     private $provider;
 
     /**
-     * @var Repository
+     * @var CacheItemPoolInterface
      */
-    private $cache;
+    private $cacheResolver;
+
+    /**
+     * @var string
+     */
+    private $cacheKey;
 
     /**
      * @var string
@@ -41,9 +46,10 @@ class OAuth2 extends TransportCore
         parent::__construct($entrypoint, $client);
     }
 
-    public function setCacheRepository(Repository  $cache): OAuth2
+    public function setCacheResolver(CacheItemPoolInterface $cacheResolver, string $key): OAuth2
     {
-        $this->cache = $cache;
+        $this->cacheResolver = $cacheResolver;
+        $this->cacheKey = $key;
         return $this;
     }
 
@@ -57,11 +63,6 @@ class OAuth2 extends TransportCore
     {
         $this->options = $options;
         return $this;
-    }
-
-    public function getCacheKey(): string
-    {
-        return static::class;
     }
 
     /**
@@ -80,20 +81,22 @@ class OAuth2 extends TransportCore
      */
     protected function getToken(): string
     {
-        if(!$this->cache){
-            return $this->token = $this->provider->getAccessToken($this->grant, $this->options);
+        $cacheItem = $this->cacheResolver->getItem($this->cacheKey);
+
+        if ($cacheItem->isHit()) {
+            $token = $cacheItem->get();
+        } else {
+            $token = $this->provider->getAccessToken($this->grant, $this->options);
+
+            $cacheItem->set($token);
+            $this->cacheResolver->save($cacheItem);
         }
 
-        $oauth = $this->cache->rememberForever($this->getCacheKey(), function () {
-            return $this->token = $this->provider->getAccessToken($this->grant, $this->options);
-        });
-
-        if (!$oauth->hasExpired()) {
-            return $oauth->getToken();
+        if ($token->hasExpired()) {
+            $this->cacheResolver->deleteItem($this->cacheKey);
+            return $this->getToken();
         }
 
-        $this->cache->forget($this->getCacheKey());
-
-        return $this->getToken();
+        return $token->getToken();
     }
 }

@@ -8,7 +8,8 @@
     }
   ],
   "require" : {
-    "php-curl-class/php-curl-class": "^8.3"
+    "php-curl-class/php-curl-class": "^8.3",
+    "psr/cache": "^1.0.0"
   },
   "suggest": {
     "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
