@@ -6,8 +6,11 @@ use Closure;
 use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cristal\ApiWrapper\Exceptions\ApiException;
 use Cristal\ApiWrapper\Exceptions\Handlers\AbstractErrorHandler;
+use Cristal\ApiWrapper\Exceptions\Handlers\BadRequestErrorHandler;
+use Cristal\ApiWrapper\Exceptions\Handlers\ForbiddenErrorHandler;
 use Cristal\ApiWrapper\Exceptions\Handlers\NetworkErrorHandler;
 use Cristal\ApiWrapper\Exceptions\Handlers\NotFoundErrorHandler;
+use Cristal\ApiWrapper\Exceptions\Handlers\UnauthorizedErrorHandler;
 use Cristal\ApiWrapper\MultipartParam;
 use Curl\Curl as CurlClient;
 use CURLFile;
@@ -19,7 +22,11 @@ use CURLFile;
 class Transport implements TransportInterface
 {
     const HTTP_NETWORK_ERROR_CODE = 0;
+    const HTTP_UNAUTHORIZED = 401;
+    const HTTP_FORBIDDEN = 403;
     const HTTP_NOT_FOUND_ERROR_CODE = 404;
+    const HTTP_BAD_REQUEST = 400;
+    const HTTP_UNPROCESSABLE_ENTITY = 422;
 
     const JSON_MIME_TYPE = 'application/json';
 
@@ -50,7 +57,11 @@ class Transport implements TransportInterface
         $this->entrypoint = rtrim($entrypoint, '/').'/';
 
         $this->setErrorHandler(self::HTTP_NETWORK_ERROR_CODE, new NetworkErrorHandler($this));
+        $this->setErrorHandler(self::HTTP_UNAUTHORIZED, new UnauthorizedErrorHandler($this));
+        $this->setErrorHandler(self::HTTP_FORBIDDEN, new ForbiddenErrorHandler($this));
         $this->setErrorHandler(self::HTTP_NOT_FOUND_ERROR_CODE, new NotFoundErrorHandler($this));
+        $this->setErrorHandler(self::HTTP_BAD_REQUEST, new BadRequestErrorHandler($this));
+        $this->setErrorHandler(self::HTTP_UNPROCESSABLE_ENTITY, new BadRequestErrorHandler($this));
     }
 
     /**

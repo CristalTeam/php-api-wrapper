@@ -6,7 +6,7 @@ use Exception;
 
 class MissingApiException extends Exception
 {
-    public function __construct($message = "Aucune API n'a été définie pour le modèle")
+    public function __construct($message = "No API bound to the entity")
     {
         return parent::__construct($message);
     }
