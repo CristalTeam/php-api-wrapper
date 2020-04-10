@@ -145,7 +145,7 @@ class Repository implements ObjectRepository
     {
         return new Paginator(
             $this->instanciateEntity($this->getMembers($results), true),
-            $results[static::PAGINATION_MAPPING_TOTAL] ?? null,
+            $results[static::PAGINATION_MAPPING_TOTAL] ?? count($results),
             $results[static::PAGINATION_MAPPING_PER_PAGE] ?? $criteria[static::CRITERIA_LIMIT] ?? null,
             $results[static::PAGINATION_MAPPING_CURRENT_PAGE] ?? $criteria[static::CRITERIA_PAGE] ?? null
         );
