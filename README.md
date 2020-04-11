@@ -4,114 +4,61 @@
 [![GitHub issues](https://img.shields.io/github/issues/cristalTeam/php-api-wrapper.svg?style=flat-square)](https://github.com/cristalTeam/php-api-wrapper/issues)
 [![GitHub license](https://img.shields.io/github/license/cristalTeam/php-api-wrapper.svg?style=flat-square)](https://github.com/cristalTeam/php-api-wrapper/blob/master/LICENSE)
 
+PHP API Wrapper is a smart stack based on a couple of a Transport and a smart Wrapper for your API. 
+It is designed to be easily integrated into your projects thanks to bridges for **Laravel, Symfony, API Platform** and a **standalone stack**.
 
-## Installation using Composer
+## :rocket: Installation using Composer
 
-```bash
+```sh
 composer require cristal/php-api-wrapper
 ```
 
-## Usage
-
-PHP API Wrapper is a Laravel Eloquent like, built to work with APIs. The integration of each API consists of three steps:
-
-- The Transport
-- The Wrapper
-- The Models and Builder
-
-### 1. The Transport
-
-The Transport is an implementation of `TransportInterface`, it manages the API Autentication, 
-returns desialized data, and manage HTTP errors with `ApiException` and childs (see `src/Exceptions`).
-
-Some implementations already exists into the namespace `Cristal\ApiWrapper\Transports` :
-
-- `Transport` Generic JSON API without authentication
-- `Bearer` Extends of `Transport` supports bearers tokens
-- `Basic` Extends of `Transport` supports basic auth
-- `OAuth2` Extends of `Transport` supports OAuth2 ([see doc](docs/transports/oauth2.md))
-
-Example of usage :
+## :eyes: Quick view 
 
 ```php
 <?php
 
+// Configure your API
+
+use Cristal\ApiWrapper\Model;
 use Cristal\ApiWrapper\Transports\Basic;
+use App\User;
 use Curl\Curl;
 
 $transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
-$users = $transport->request('/users');
+$api = new Api($transport);
 
-```
+Model::setApi($api);
 
-### 2. The Wrapper
+// Use your model like Eloquent (Usage with Symfony is significantly different)
 
-A wrapper is a standalone class that must follow a specific implementation.
-For example, consider a User (create, read, delete and update), implementation. Here's what your wrapper should look like :
+$activedUsers = User::where(['active' => true])->get();
 
-```php
-<?php // This is a home made wrapper
-
-class CustomWraper
-{
-    private $transport;
-    
-    public function __construct(Transport $transport)
-    {
-        $this->transport = $transport;
-    }
-    //...
-    public function getUser($id) // Retrive just ONE user
-    {
-        return $this->transport->request('/user/'.$id);
-    }
-
-    public function getUsers(array $filters) // Retrive multiple users
-    {
-        return $this->transport->request('/users', $filters);
-    }
-
-    public function createUser(array $data) 
-    {
-        return $this->transport->request('/users', $data, 'post');
-    }
-
-    public function updateUser($id, array $data)
-    {
-        return $this->transport->request('/user/'.$id, $data, 'put');
-    }
-
-    public function deleteUser($id)
-    {
-        return $this->transport->request('/user/'.$id, 'delete');
-    }
-    //...
+foreach($activedUsers as $user){
+    $user->active = false;
+    $user->save();
 }
 ```
 
-This way can be very redundant, which is why you can extend from `Cristal\ApiWrapper\Api`.
-This implementation forward methods with magics `__call` (for exemple with User) :
+## :book: Chose your stack
 
-- `getUser(...)` to the method `findOne('user', ...)`
-- `getUsers(...)` to the method `findAll('users', ...)`
-- `createUser(...)` to the method `create('user', ...)`
-- `updateUser(...)` to the method `update('user', ...)`
-- `deleteUser(...)` to the method `delete('user', ...)`
+### :point_right: Start wihout Laravel or Symfony
 
-This new implementation will probably look like that :
+If you decide to work without Laravel or Symfony, PHP Api Wrapper comes with a standalone Builder and a Model largely inspired by Eloquent, but really standalone. I promise !
 
-```php
-<?php
+[Start without Laravel or Symfony](docs/work-standalone.md)
 
-class CustomWraper extends Api
-{
-    // Nothing here...
-}
-```
+### :point_right: Start with Laravel
 
-## 3. Chose your stack
+This is actualy the powerfull usage of API Wrapper. If you decide to use PHP API Wrapper with Laravel the integration approaches perfection. The builder returns Collections, all models are usable with the **Laravel Route Binding** (this is really impressive). And icing on the cake, **you can create complexes relations between Eloquent and PHP API Wrapper**.
 
-- [Work without Laravel or Symfony](docs/work-standalone.md)
-- [Work with Laravel](docs/work-with-laravel.md)
-- [Work with Symfony (and optionally Api Platform)](docs/work-with-symfony.md)
+[Start with Laravel](docs/work-with-laravel.md)
 
+
+### :point_right: Start with Symfony (and optionally Api Platform)
+
+This implementation is realy interesting too, the Symfony bridge provide you a Repository implementing the Doctrine RepositoryInterface which hydrates your entities. A Manager is also available which allows you to manage repositories and its connections. If you are using API Platform this is fully compatible. A API Platform Data Provider is also registered.
+
+:warning: *Careful, this implementation is currently read-only. Help us to implement the missing parts !*
+
+[Start with Symfony](docs/work-with-symfony.md)

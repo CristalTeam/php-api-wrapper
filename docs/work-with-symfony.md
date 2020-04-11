@@ -1,8 +1,13 @@
-# Work with Symfony
+# :book: Work with Symfony
 
-*First, be sure you followed the [part 1 and 2 here](../README.md).*
+Careful, this implementation is currently read-only. Help us to implement the missing parts !
 
-Careful, this implementation is currently read-only. Help us to implement the writing.
+## Requirements
+
+For each integration, you need some basics :
+
+- First, the right transport that provides HTTP requests and manages your API authentication. ([Learn more about Transports](more-about-transports.md))
+- Then, a wrapper class. This is a very simple class that implements basic methods to provide an abstraction of your API. ([Learn more about Wrapper](more-about-wrapper.md))
 
 ## 3. Register the bundle
 
@@ -57,7 +62,7 @@ class MyCustomConnection implements ConnectionInterface
 
 ## 4. Annotate your Entity
 
-Basically annotate your entity with the [Entity annotation](../src/Bridges/Symfony/Mapping/Entity.php), as below :
+Basically annotate your entity with the [Entity annotation](../src/Bridges/Symfony/Mapping/Entity.php), such as below :
 
 ```php
 <?php
