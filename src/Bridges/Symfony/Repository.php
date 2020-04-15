@@ -53,7 +53,7 @@ class Repository implements ObjectRepository
         $this->connection = $connection;
     }
 
-    private function getApi(): Api
+    protected function getApi(): Api
     {
         return $this->connection->getApi();
     }
