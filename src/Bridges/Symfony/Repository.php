@@ -137,10 +137,12 @@ class Repository implements ObjectRepository
 
     protected function filterCriteria(array $criteria)
     {
-        return array_intersect_key(
-            $criteria,
-            array_flip($this->class->getAllowedFilters())
+        $allowedFilters = array_merge(
+            $this->class->getAllowedFilters(),
+            [static::CRITERIA_ORDER_BY, static::CRITERIA_LIMIT, static::CRITERIA_PAGE]
         );
+
+        return array_intersect_key($criteria, array_flip($allowedFilters));
     }
 
     protected function paginate($results, $criteria): iterable
