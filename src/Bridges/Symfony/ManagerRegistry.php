@@ -4,23 +4,23 @@ namespace Cristal\ApiWrapper\Bridges\Symfony;
 
 use Cristal\ApiWrapper\Bridges\Symfony\Exception\ConnectionNotFoundException;
 use Cristal\ApiWrapper\Bridges\Symfony\Exception\RepositoryNotFoundException;
-use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ManagerRegistry
 {
     /**
-     * @var DenormalizerInterface
-     */
-    private $denormalizer;
-
-    /**
      * @var iterable|ConnectionInterface[]
      */
-    private iterable $connections;
+    private $connections;
 
-    public function __construct(DenormalizerInterface $denormalizer)
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
     {
-        $this->denormalizer = $denormalizer;
+        $this->container = $container;
     }
 
     public function getRepository(string $entityName): Repository
@@ -31,12 +31,7 @@ class ManagerRegistry
             throw new RepositoryNotFoundException(sprintf('Unable to find API repository for %s.', $entityName));
         }
 
-        $repositoryName = $metadata->getRepositoryClass();
-        return new $repositoryName(
-            new ClassMetadata($entityName),
-            $this->denormalizer,
-            $this->getConnection($metadata->getConnectionName())
-        );
+        return $this->container->get($metadata->getRepositoryClass())->setupRepository($this, $entityName);
     }
 
     public function getMetadataFromClass(string $entityName): ?ClassMetadata

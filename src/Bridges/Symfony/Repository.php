@@ -43,14 +43,16 @@ class Repository implements ObjectRepository
      */
     private $connection;
 
-    public function __construct(
-        ClassMetadata $className,
-        DenormalizerInterface $denormalizer,
-        ConnectionInterface $connection
-    ) {
-        $this->class = $className;
+    /**
+     * @var ManagerRegistry
+     */
+    protected $manager;
+
+    public function __construct(ManagerRegistry $manager, DenormalizerInterface $denormalizer, $entity = null)
+    {
+        $this->manager = $manager;
         $this->denormalizer = $denormalizer;
-        $this->connection = $connection;
+        $this->setupRepository($entity);
     }
 
     protected function getApi(): Api
@@ -168,5 +170,18 @@ class Repository implements ObjectRepository
         }
 
         return $denormalize($data);
+    }
+
+    /**
+     * @param string|null $entity
+     */
+    public function setupRepository($entity): self
+    {
+        if ($entity) {
+            $this->class = new ClassMetadata($entity);
+            $this->connection = $this->manager->getConnection($this->class->getConnectionName());
+        }
+
+        return $this;
     }
 }

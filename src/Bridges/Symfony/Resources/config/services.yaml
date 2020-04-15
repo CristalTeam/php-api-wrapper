@@ -1,6 +1,10 @@
 services:
     Cristal\ApiWrapper\Bridges\Symfony\ManagerRegistry:
         autowire: true
+
+    Cristal\ApiWrapper\Bridges\Symfony\Repository:
+        autowire: true
+        tags: ['api_wrapper.repository_service']
     
     Cristal\ApiWrapper\Bridges\Symfony\DataProvider\ApiPlatformDataProvider:
         tags: ['api_platform.collection_data_provider', 'api_platform.item_data_provider']
