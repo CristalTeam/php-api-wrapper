@@ -31,7 +31,7 @@ class ManagerRegistry
             throw new RepositoryNotFoundException(sprintf('Unable to find API repository for %s.', $entityName));
         }
 
-        return $this->container->get($metadata->getRepositoryClass())->setupRepository($this, $entityName);
+        return $this->container->get($metadata->getRepositoryClass())->setupRepository($entityName);
     }
 
     public function getMetadataFromClass(string $entityName): ?ClassMetadata
