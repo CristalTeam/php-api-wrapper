@@ -9,7 +9,7 @@ For each integration, you need some basics :
 - First, the right transport that provides HTTP requests and manages your API authentication. ([Learn more about Transports](more-about-transports.md))
 - Then, a wrapper class. This is a very simple class that implements basic methods to provide an abstraction of your API. ([Learn more about Wrapper](more-about-wrapper.md))
 
-## 3. Register the bundle
+## Register the bundle
 
 Into your bundle file, add the Api Wrapper bundle :
 
@@ -22,7 +22,7 @@ return [
 ];
 ```
 
-## 4. Register a connection
+## Register a connection
 
 Each class that implements the [ConnectionInterface](../src/Bridges/Symfony/ConnectionInterface.php) is automatically registered. 
 If not, you must manually tag your connection class with the `api_wrapper.connection` tag.
@@ -55,12 +55,12 @@ class MyCustomConnection implements ConnectionInterface
         }
 
         $transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
-        return $this->api = new Api($transport);
+        return $this->api = new CustomWraper($transport);
     }
 }
 ```
 
-## 4. Annotate your Entity
+## Annotate your Entity
 
 Basically annotate your entity with the [Entity annotation](../src/Bridges/Symfony/Mapping/Entity.php), such as below :
 
@@ -85,7 +85,7 @@ class Document
 }
 ```
 
-## 5. Ready to use
+## Ready to use
 
 Now, you can inject the [ManagerRegistry](../src/Bridges/Symfony/ManagerRegistry.php) (for example, into a Controller) :
 

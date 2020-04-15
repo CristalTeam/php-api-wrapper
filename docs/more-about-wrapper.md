@@ -6,15 +6,19 @@ For example, consider a User (create, read, delete and update), implementation. 
 ```php
 <?php // This is a homemade wrapper
 
-class CustomWraper
+use Cristal\ApiWrapper\Transports\TransportInterface;
+
+class CustomWrapper
 {
     private $transport;
     
-    public function __construct(Transport $transport)
+    public function __construct(TransportInterface $transport)
     {
         $this->transport = $transport;
     }
+
     //...
+
     public function getUser($id) // Retrive just ONE user
     {
         return $this->transport->request('/user/'.$id);
@@ -39,12 +43,14 @@ class CustomWraper
     {
         return $this->transport->request('/user/'.$id, 'delete');
     }
+
     //...
+
 }
 ```
 
-This way can be very redundant, which is why you can extend from `Cristal\ApiWrapper\Api`.
-This implementation forward methods with magics `__call` (for exemple with User) :
+This way can be very redundant, which is why you can extend from [`Cristal\ApiWrapper\Api`](../src/Api.php).
+This new implementation forward methods with magics `__call` (for exemple with User) :
 
 - `getUser(...)` to the method `findOne('user', ...)`
 - `getUsers(...)` to the method `findAll('users', ...)`
@@ -57,7 +63,11 @@ This new implementation will probably look like that :
 ```php
 <?php
 
-class CustomWraper extends Api
+namespace App;
+
+use Cristal\ApiWrapper\Api;
+
+class CustomWrapper extends Api
 {
     // Nothing here...
 }

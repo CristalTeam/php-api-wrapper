@@ -43,7 +43,7 @@ MyModel::setApi($api);
 
 ```
 
-As you can see, if We need to provide another API Wrapper, We can create a new empty model to set another API Wrapper.
+As you can see, if we need to provide another API Wrapper, we can create a new empty model to set another API Wrapper.
 
 ## Create a model
 
