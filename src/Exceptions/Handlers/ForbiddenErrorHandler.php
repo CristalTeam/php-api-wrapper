@@ -18,7 +18,6 @@ class ForbiddenErrorHandler extends AbstractErrorHandler
     {
         throw new ApiForbiddenException(
             $exception->getResponse(),
-            $exception->getMessage(),
             $exception->getCode(),
             $exception->getPrevious()
         );

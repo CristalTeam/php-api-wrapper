@@ -18,7 +18,6 @@ class UnauthorizedErrorHandler extends AbstractErrorHandler
     {
         throw new ApiUnauthorizedException(
             $exception->getResponse(),
-            $exception->getMessage(),
             $exception->getCode(),
             $exception->getPrevious()
         );
