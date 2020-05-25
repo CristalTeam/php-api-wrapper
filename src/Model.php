@@ -418,7 +418,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return self|null
      */
-    public function resolveRouteBinding($value)
+    public function resolveRouteBinding($value, $field = null)
     {
         return $this->find($value);
     }

@@ -10,4 +10,9 @@ use Illuminate\Contracts\Support\Jsonable;
 class Model extends CoreModel implements Arrayable, Jsonable, UrlRoutable
 {
     use HasEloquentRelations;
+
+    public function resolveChildRouteBinding($childType, $value, $field)
+    {
+        return null;
+    }
 }
