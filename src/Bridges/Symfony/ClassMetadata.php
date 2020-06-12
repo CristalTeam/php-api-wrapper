@@ -62,6 +62,11 @@ class ClassMetadata extends SerializerClassMetadata
         return $this->getAnnotation()->connectionName;
     }
 
+    public function getFormat(): ?string
+    {
+        return $this->getAnnotation()->format;
+    }
+
     private function getAnnotation(): Entity
     {
         if ($this->entityAnnotation) {

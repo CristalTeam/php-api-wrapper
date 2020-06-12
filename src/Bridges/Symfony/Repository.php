@@ -162,7 +162,7 @@ class Repository implements ObjectRepository
         }
 
         $denormalize = function ($data) {
-            return $this->denormalizer->denormalize($data, $this->getClassName());
+            return $this->denormalizer->denormalize($data, $this->getClassName(), $this->class->getFormat());
         };
 
         if ($multiple) {

@@ -31,6 +31,11 @@ final class Entity
     public $connectionName;
 
     /**
+     * @var string
+     */
+    public $format = 'json';
+
+    /**
      * @var array
      */
     public $allowedFilter = [];
