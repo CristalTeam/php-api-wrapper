@@ -2,6 +2,7 @@
 
 namespace Cristal\ApiWrapper\Bridges\Symfony;
 
+use ApiPlatform\Core\Serializer\AbstractItemNormalizer;
 use Cristal\ApiWrapper\Api;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -162,7 +163,12 @@ class Repository implements ObjectRepository
         }
 
         $denormalize = function ($data) {
-            return $this->denormalizer->denormalize($data, $this->getClassName(), $this->class->getFormat());
+            return $this->denormalizer->denormalize(
+                $data,
+                $this->getClassName(),
+                $this->class->getFormat(),
+                [AbstractItemNormalizer::DISABLE_TYPE_ENFORCEMENT => null === $this->class->getFormat()]
+            );
         };
 
         if ($multiple) {

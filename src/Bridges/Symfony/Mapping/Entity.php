@@ -31,9 +31,9 @@ final class Entity
     public $connectionName;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $format = 'json';
+    public $format;
 
     /**
      * @var array
