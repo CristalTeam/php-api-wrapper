@@ -198,9 +198,9 @@ class Builder
      */
     protected function callScope(array $scope, $parameters = [])
     {
-        $result = $scope[0]->{$scope[1]}($this);
+        [$model, $method] = $scope;
 
-        return $result;
+        return $model->$method($this, ...$parameters) ?? $this;
     }
 
     /**
