@@ -28,22 +28,23 @@ class MyModel extends Model
 
 ```
 
-Next, follow this example to register your API Wrapper into your new model :
+Next, follow this example to register your custom API Wrapper into your custom model :
 
 ```php
 <?php
 
 use App\MyModel;
+use App\CustomWrapper;
 use Curl\Curl;
 use Cristal\ApiWrapper\Transports\Basic;
 
 $transport = new Basic('username', 'password', 'http://api.example.com/v1/', new Curl);
-$api = new YourCustomAPIWrapper($transport);
+$api = new CustomWrapper($transport);
 MyModel::setApi($api);
 
 ```
 
-As you can see, if we need to provide another API Wrapper, we can create a new empty model to set another API Wrapper.
+As you can see, if you need to provide another API Wrapper, you can create a new empty model to set another API Wrapper.
 
 ## Create a model
 

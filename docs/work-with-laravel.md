@@ -27,7 +27,7 @@ class MyModel extends Model
 
 > **Tips !** Instead of the standard Model, this bridged one returns Collections, is Serializable, Jsonable, can be used in your Routes and allows relations between an Api Model and an Eloquent Model.
 
-Next, into your ServiceProvider, you need to create a link between instance of Api Wrapper and your model :
+Next, into your ServiceProvider, you need to create a link between instance of your custom Api Wrapper and your custom model :
 
 ```php
 <?php
@@ -35,8 +35,8 @@ Next, into your ServiceProvider, you need to create a link between instance of A
 namespace App\Providers;
 
 use App\MyModel;
+use App\CustomWrapper;
 use Illuminate\Support\ServiceProvider;
-use Cristal\ApiWrapper\Api;
 use Cristal\ApiWrapper\Transports\Basic;
 use Curl\Curl;
 
@@ -44,30 +44,31 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        MyModel::setApi($this->app->make(Api::class));
+        MyModel::setApi($this->app->make(CustomWrapper::class));
     }
     
     public function register()
     {
-        $this->app->bind(Api::class, function(){
+        $this->app->bind(CustomWrapper::class, function(){
             $transport = new Basic(
                 'username', 
                 'password', 
                 'http://api.example.com/v1/', 
                 $this->app->make(Curl::class)
             );
-            return new Api($transport);
+            return new CustomWrapper($transport);
         });
     }
 
 }
 
-
 ```
+
+As you can see, if you need to provide another API Wrapper, you can create a new empty model to set another API Wrapper.
 
 ## Create a model
 
-Next, create a model that represent your object :
+Next, create a model that represents your object :
 
 ```php
 <?php
@@ -79,7 +80,7 @@ class User extends MyModel
     // This property is directly used and pluralized by the API Wrapper (ex : getUsers).
     protected $entity = 'user';
 
-    // If your API ressource can be identified with a unique key you can define 
+    // If your API resource can be identified with a unique key you can define 
     // the primary key. By default it is 'id'.
     protected $primaryKey = 'id';
 }

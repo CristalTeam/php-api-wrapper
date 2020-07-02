@@ -19,12 +19,12 @@ class CustomWrapper
 
     //...
 
-    public function getUser($id) // Retrive just ONE user
+    public function getUser($id) // Retrieve just ONE user
     {
         return $this->transport->request('/user/'.$id);
     }
 
-    public function getUsers(array $filters) // Retrive multiple users
+    public function getUsers(array $filters) // Retrieve multiple users
     {
         return $this->transport->request('/users', $filters);
     }
@@ -41,7 +41,7 @@ class CustomWrapper
 
     public function deleteUser($id)
     {
-        return $this->transport->request('/user/'.$id, 'delete');
+        return $this->transport->request('/user/'.$id, [], 'delete');
     }
 
     //...
