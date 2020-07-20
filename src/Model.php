@@ -3,6 +3,7 @@
 namespace Cristal\ApiWrapper;
 
 use ArrayAccess;
+use Closure;
 use Cristal\ApiWrapper\Concerns\HasAttributes;
 use Cristal\ApiWrapper\Concerns\HasRelationships;
 use Cristal\ApiWrapper\Concerns\HasGlobalScopes;
@@ -71,9 +72,9 @@ abstract class Model implements ArrayAccess, JsonSerializable
     /**
      * Set the Model Api.
      *
-     * @param Api $api
+     * @param Api|Closure $api
      */
-    public static function setApi(Api $api)
+    public static function setApi($api)
     {
         static::$apis[static::$api] = $api;
     }
@@ -85,11 +86,21 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function getApi(): Api
     {
-        if (static::$apis[static::$api] ?? null) {
-            return static::$apis[static::$api];
+        if (!static::$apis[static::$api] ?? null) {
+            throw new MissingApiException();
         }
 
-        throw new MissingApiException();
+        $api = static::$apis[static::$api];
+
+        if (is_callable($api)) {
+            $api = $api();
+        }
+
+        if (!$api instanceof Api) {
+            throw new MissingApiException();
+        }
+
+        return $api;
     }
 
     /**
