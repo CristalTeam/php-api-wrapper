@@ -5,6 +5,7 @@ namespace Cristal\ApiWrapper\Bridges\Laravel\Relations;
 use Cristal\ApiWrapper\Model;
 use Cristal\ApiWrapper\Relations\HasMany as CoreHasMany;
 use Illuminate\Database\Eloquent\Model as ModelEloquent;
+use LogicException;
 
 class HasMany extends CoreHasMany
 {
