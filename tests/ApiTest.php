@@ -6,16 +6,17 @@ use Cristal\ApiWrapper\Api;
 use Cristal\ApiWrapper\Transports\TransportInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 class ApiTest extends TestCase
 {
-    const ENDPOINTS = ['client', 'catalogue', 'materiel', 'fabricant', 'type', 'tarif', 'caracteristique'];
+    protected const ENDPOINTS = ['client', 'catalogue', 'materiel', 'fabricant', 'type', 'tarif', 'caracteristique'];
     protected $token;
     protected $entrypoint;
 
-    const WITH_FILTER = ['with_filters'];
-    const WITHOUT_FILTER = ['without_filters'];
-    const ID_ENTITY = 123;
+    protected const WITH_FILTER = ['with_filters'];
+    protected const WITHOUT_FILTER = ['without_filters'];
+    protected const ID_ENTITY = 123;
 
     protected function createFakeTransport()
     {
@@ -27,60 +28,50 @@ class ApiTest extends TestCase
         return $transport;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->token = 'token_jwt';
         $this->entrypoint = 'https://exemple/api/';
     }
 
-    public function testApiWithoutTransport()
+    public function testApiWithoutTransport(): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         new Api(null);
     }
 
-    public function testApiWithTransport()
+    public function testApiWithTransport(): void
     {
         $transport = Mockery::mock(TransportInterface::class);
         $api = new Api($transport);
-        $this->assertInstanceOf(TransportInterface::class, $api->getTransport());
+        self::assertInstanceOf(TransportInterface::class, $api->getTransport());
     }
 
-    public function testGetWithoutFilters()
+    public function testGetWithoutFilters(): void
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
         foreach (self::ENDPOINTS as $endpoint) {
-            $this->assertEquals(self::WITHOUT_FILTER, $api->{'get'.ucfirst($endpoint).'s'}());
+            self::assertEquals(self::WITHOUT_FILTER, $api->{'get'.ucfirst($endpoint).'s'}());
         }
     }
 
-    public function testGetWithFilters()
+    public function testGetWithFilters(): void
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
         foreach (self::ENDPOINTS as $endpoint) {
-            $this->assertEquals(self::WITH_FILTER, $api->{'get'.ucfirst($endpoint).'s'}(self::WITH_FILTER));
+            self::assertEquals(self::WITH_FILTER, $api->{'get'.ucfirst($endpoint).'s'}(self::WITH_FILTER));
         }
     }
 
-    public function testTryToGetSpecificEntityWithoutIdAsArgument()
-    {
-        $this->expectException(\TypeError::class);
-        $transport = $this->createFakeTransport();
-        $api = new Api($transport);
-        foreach (self::ENDPOINTS as $endpoint) {
-            $api->{'get'.ucfirst($endpoint)}();
-        }
-    }
-
-    public function testTryToGetSpecificEntity()
+    public function testTryToGetSpecificEntity(): void
     {
         $transport = $this->createFakeTransport();
         $api = new Api($transport);
         foreach (self::ENDPOINTS as $endpoint) {
             $entity = $api->{'get'.ucfirst($endpoint)}(self::ID_ENTITY);
-            $this->assertInternalType('array', $entity);
+            self::assertIsArray($entity);
         }
     }
 }

@@ -2,7 +2,10 @@
 
 namespace Cristal\ApiWrapper\Tests;
 
+use Curl\Curl;
+use Exception;
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Cristal\ApiWrapper\Transports\Bearer;
 
@@ -19,191 +22,192 @@ class TransportCurlTest extends TestCase
     protected $entrypoint;
 
     /**
-     * @var \Mockery\MockInterface|\Curl\Curl
+     * @var MockInterface|Curl
      */
     protected $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->jwt = 'jwt';
         $this->entrypoint = 'http://entrypoint/';
-        $this->client = Mockery::mock(\Curl\Curl::class);
+        $this->client = Mockery::mock(Curl::class);
 
         $this->client->shouldReceive('setHeader')->andReturn(null);
     }
 
-    public function testCreateCurlTranportClass()
+    public function testCreateCurlTranportClassWorks(): void
     {
-        new Bearer($this->jwt, $this->entrypoint, $this->client);
+        $transport = new Bearer($this->jwt, $this->entrypoint, $this->client);
+        self::assertInstanceOf(Bearer::class, $transport);
     }
 
     /**
      * @param $httpCode
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function httpStatusCode($httpCode)
+    protected function httpStatusCode($httpCode): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $this->client->shouldReceive('get')->andReturn(null);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->client->httpStatusCode = $httpCode;
         $curl->request('/some-endpoint');
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode404ThrowsAnException()
+    public function testRequestWithHttpStatusCode404ThrowsAnException(): void
     {
         $this->httpStatusCode(404);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode301ThrowsAnException()
+    public function testRequestWithHttpStatusCode301ThrowsAnException(): void
     {
         $this->httpStatusCode(301);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode500ThrowsAnException()
+    public function testRequestWithHttpStatusCode500ThrowsAnException(): void
     {
         $this->httpStatusCode(500);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode300ThrowsAnException()
+    public function testRequestWithHttpStatusCode300ThrowsAnException(): void
     {
         $this->httpStatusCode(300);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode418ThrowsAnException()
+    public function testRequestWithHttpStatusCode418ThrowsAnException(): void
     {
         $this->httpStatusCode(418);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode422ThrowsAnException()
+    public function testRequestWithHttpStatusCode422ThrowsAnException(): void
     {
         $this->httpStatusCode(422);
     }
 
     /**
      * @param $httpCode
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function httpStatusCodeValidParseAndReturnJsonReponse($httpCode)
+    protected function httpStatusCodeValidParseAndReturnJsonReponse($httpCode): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $this->client->shouldReceive('get')->andReturn(null);
 
         $this->client->httpStatusCode = $httpCode;
         $this->client->rawResponse = '{"success":true}';
-        $this->assertArrayHasKey('success', $curl->request('/some-endpoint'));
+        self::assertArrayHasKey('success', $curl->request('/some-endpoint'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode200ParseAndReturnJsonResponse()
+    public function testRequestWithHttpStatusCode200ParseAndReturnJsonResponse(): void
     {
         $this->httpStatusCodeValidParseAndReturnJsonReponse(200);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode201ParseAndReturnJsonResponse()
+    public function testRequestWithHttpStatusCode201ParseAndReturnJsonResponse(): void
     {
         $this->httpStatusCodeValidParseAndReturnJsonReponse(201);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testRequestWithHttpStatusCode204ParseAndReturnJsonResponse()
+    public function testRequestWithHttpStatusCode204ParseAndReturnJsonResponse(): void
     {
         $this->httpStatusCodeValidParseAndReturnJsonReponse(204);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testGetMethodRequest()
+    public function testGetMethodRequest(): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('get')->andReturnUsing(function () use ($client) {
+        $this->client->shouldReceive('get')->andReturnUsing(static function () use ($client) {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
-        $this->assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'get'));
+        self::assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'get'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testPostMethodRequest()
+    public function testPostMethodRequest(): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('post')->andReturnUsing(function () use ($client) {
+        $this->client->shouldReceive('post')->andReturnUsing(static function () use ($client) {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
-        $this->assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'post'));
+        self::assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'post'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testPutMethodRequest()
+    public function testPutMethodRequest(): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('put')->andReturnUsing(function () use ($client) {
+        $this->client->shouldReceive('put')->andReturnUsing(static function () use ($client) {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
-        $this->assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'put'));
+        self::assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'put'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testDeleteMethodRequest()
+    public function testDeleteMethodRequest(): void
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('delete')->andReturnUsing(function () use ($client) {
+        $this->client->shouldReceive('delete')->andReturnUsing(static function () use ($client) {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
-        $this->assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'delete'));
+        self::assertArrayHasKey('success', $curl->request('/some-endpoint', [], 'delete'));
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testUnknownMethodRequestThrowsAnException()
+    public function testUnknownMethodRequestThrowsAnException(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('azerty')->andReturnUsing(function () use ($client) {
+        $this->client->shouldReceive('foo')->andReturnUsing(static function () use ($client) {
             $client->httpStatusCode = 200;
         });
-        $curl->request('/some-endpoint', [], 'azerty');
+        $curl->request('/some-endpoint', [], 'foo');
     }
 }
