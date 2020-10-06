@@ -49,4 +49,15 @@ class HasMany extends Relation
             return new $class($item, isset($item[$this->localKey]));
         }, $data);
     }
+
+    public function getResults()
+    {
+        $results = parent::getResults();
+
+        if (null === $results) {
+            return [];
+        }
+
+        return $results;
+    }
 }
