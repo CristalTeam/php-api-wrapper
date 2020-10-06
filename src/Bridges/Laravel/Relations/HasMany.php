@@ -6,6 +6,7 @@ use Cristal\ApiWrapper\Model;
 use Cristal\ApiWrapper\Relations\HasMany as CoreHasMany;
 use Illuminate\Database\Eloquent\Model as ModelEloquent;
 use LogicException;
+use Illuminate\Support\Collection;
 
 class HasMany extends CoreHasMany
 {
@@ -26,12 +27,13 @@ class HasMany extends CoreHasMany
         $this->addConstraints();
     }
 
-    /**
-     * @param $data
-     * @return mixed
-     */
     public function getRelationsFromArray($data)
     {
-        return collect(parent::getRelationsFromArray($data));
+        return new Collection(parent::getRelationsFromArray($data));
+    }
+
+    public function getResults()
+    {
+        return new Collection(parent::getResults());
     }
 }
