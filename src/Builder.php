@@ -32,7 +32,10 @@ class Builder
      */
     public function getQuery()
     {
-        return $this->query;
+        return array_merge(
+            array_merge(...array_values($this->scopes)),
+            $this->query
+        );
     }
 
     /**
@@ -183,7 +186,20 @@ class Builder
     public function withGlobalScope($identifier, array $scope)
     {
         $this->scopes[$identifier] = $scope;
-        $this->where($scope);
+
+        return $this;
+    }
+
+    /**
+     * Remove a registered global scope.
+     *
+     * @param  string  $identifier
+     * @return $this
+     */
+    public function withoutGlobalScope(string $identifier)
+    {
+        unset($this->scopes[$identifier]);
+        $this->removedScopes[] = $identifier;
 
         return $this;
     }
