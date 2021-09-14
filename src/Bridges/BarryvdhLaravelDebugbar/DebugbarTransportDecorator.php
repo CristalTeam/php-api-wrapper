@@ -166,10 +166,23 @@ class DebugbarTransportDecorator implements TransportInterface
                     '[%s] %s[%s]',
                     $method,
                     $endpoint,
-                    formatDuration(microtime(true) - $start)
+                    $this->formatDuration(microtime(true) - $start)
                 )
             );
 
         return $this;
+    }
+
+    public static function formatDuration($seconds)
+    {
+        if ($seconds < 0.001) {
+            return round($seconds * 1000000) . 'μs';
+        }
+
+        if ($seconds < 1) {
+            return round($seconds * 1000, 2) . 'ms';
+        }
+
+        return round($seconds, 2) . 's';
     }
 }
