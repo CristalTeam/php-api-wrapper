@@ -114,9 +114,9 @@ class Api
      * @param int    $id
      * @param        $attributes
      *
-     * @return array
+     * @return mixed|array
      */
-    protected function update(string $endpoint, $id, $attributes): array
+    protected function update(string $endpoint, $id, $attributes)
     {
         $key = $endpoint.'/'.$id.'?';
 
@@ -129,9 +129,9 @@ class Api
      * @param string $endpoint
      * @param        $attributes
      *
-     * @return array
+     * @return mixed|array
      */
-    protected function create(string $endpoint, $attributes): array
+    protected function create(string $endpoint, $attributes)
     {
         return $this->getTransport()->request('/'.$endpoint, $attributes, 'post') ?? [];
     }
@@ -142,9 +142,9 @@ class Api
      * @param string $endpoint
      * @param int    $id
      *
-     * @return array
+     * @return mixed|array
      */
-    protected function delete(string $endpoint, $id): array
+    protected function delete(string $endpoint, $id)
     {
         $key = $endpoint.'/'.$id.'?';
         $this->deleteCache($key);
