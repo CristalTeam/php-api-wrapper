@@ -3,6 +3,7 @@
 namespace Cristal\ApiWrapper;
 
 use Cristal\ApiWrapper\Concerns\HasCache;
+use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
 use Cristal\ApiWrapper\Transports\TransportInterface;
 
 /**
@@ -55,7 +56,7 @@ class Api
 
         $endpoint = strtolower($matches[2]);
         if ('get' === $matches[1]) {
-            if (!is_array($arguments[0] ?? [])) {
+            if (array_key_exists(0, $arguments) && !is_array($arguments[0])) {
                 return $this->findOne($endpoint, ...$arguments);
             }
 
@@ -98,6 +99,12 @@ class Api
      */
     protected function findOne(string $endpoint, $id, array $filters = [])
     {
+        // Makes no sense to proceed API call if we passed null id.
+        // It would mean that we would like to do a findAll call instead and it could cause side effects.
+        if ($id === null) {
+            throw new ApiEntityNotFoundException([]);
+        }
+
         $uri = '/'.$endpoint.'/'.$id;
         $key = $uri.'?'.http_build_query($filters);
         if ($this->hasCache($key)) {
