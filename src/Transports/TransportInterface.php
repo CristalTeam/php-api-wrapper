@@ -29,4 +29,6 @@ interface TransportInterface
      * @return mixed
      */
     public function request($endpoint, array $data = [], $method = 'get');
+
+    public function getResponseHeaders(): array;
 }
