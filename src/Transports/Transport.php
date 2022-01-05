@@ -230,4 +230,9 @@ class Transport implements TransportInterface
         $this->getClient()->setHeader('Content-Type', static::JSON_MIME_TYPE);
         return json_encode($data);
     }
+
+    public function getResponseHeaders(): array
+    {
+        return iterator_to_array($this->getClient()->getResponseHeaders());
+    }
 }

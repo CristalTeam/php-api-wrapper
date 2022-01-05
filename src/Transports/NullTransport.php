@@ -31,4 +31,9 @@ class NullTransport implements TransportInterface
     {
         return [];
     }
+
+    public function getResponseHeaders(): array
+    {
+        return [];
+    }
 }

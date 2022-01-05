@@ -185,4 +185,9 @@ class DebugbarTransportDecorator implements TransportInterface
 
         return round($seconds, 2) . 's';
     }
+
+    public function getResponseHeaders(): array
+    {
+        $this->transport->getResponseHeaders();
+    }
 }
