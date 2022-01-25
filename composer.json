@@ -9,15 +9,15 @@
     }
   ],
   "require" : {
-    "php-curl-class/php-curl-class": "^8.3",
-    "psr/cache": "^1.0.0"
+    "php-curl-class/php-curl-class": "^8.3"
   },
   "suggest": {
     "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
     "laravel/framework":  "To integrate Laravel Collection, Pagination and Eloquent relations with your models.",
     "symfony/symfony" : "To integrate a ManagerRegistry, a Paginator and support serialization with your entities.",
     "api-platform/core" : "To integrate a DataProvider and support the Paginator of the Api Platform in addition to the support of Symfony.",
-    "league/oauth2-client" : "To support OAuth2 request Transport."
+    "league/oauth2-client" : "To support OAuth2 request Transport.",
+    "psr/cache": "To add transport caching. Needed for OAuth support."
   },
   "autoload": {
     "psr-4": {
