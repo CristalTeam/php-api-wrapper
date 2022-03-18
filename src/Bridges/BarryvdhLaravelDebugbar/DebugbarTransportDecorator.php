@@ -188,6 +188,6 @@ class DebugbarTransportDecorator implements TransportInterface
 
     public function getResponseHeaders(): array
     {
-        $this->transport->getResponseHeaders();
+        return $this->transport->getResponseHeaders();
     }
 }
