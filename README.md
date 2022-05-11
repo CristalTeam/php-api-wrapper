@@ -42,7 +42,7 @@ foreach($activedUsers as $user){
 
 ## :book: Chose your stack
 
-### :point_right: Start wihout Laravel or Symfony
+### :point_right: Start without Laravel or Symfony
 
 If you decide to work without Laravel or Symfony, PHP Api Wrapper comes with a standalone Builder and a Model largely inspired by Eloquent, but really standalone. I promise !
 
