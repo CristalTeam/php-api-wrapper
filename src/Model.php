@@ -595,7 +595,10 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     protected function performDeleteOnModel()
     {
-        $this->getApi()->{'delete'.ucfirst($this->getEntity())}($this->{$this->primaryKey});
+        $this->getApi()->{'delete'.ucfirst($this->getEntity())}(
+            $this->{$this->primaryKey},
+            array_merge(...array_values($this->getGlobalScopes()))
+        );
 
         $this->exists = false;
     }
