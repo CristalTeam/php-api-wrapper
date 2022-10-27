@@ -145,7 +145,7 @@ class Transport implements TransportInterface
                 break;
             case 'delete':
                 $url = $this->getUrl($endpoint);
-                $this->getClient()->delete($url, $this->encodeBody($data));
+                $this->getClient()->delete($url, $data);
                 break;
         }
 

@@ -151,11 +151,11 @@ class Api
      *
      * @return mixed|array
      */
-    protected function delete(string $endpoint, $id)
+    protected function delete(string $endpoint, $id, array $data = [])
     {
         $key = $endpoint.'/'.$id.'?';
         $this->deleteCache($key);
 
-        return $this->getTransport()->request('/'.$endpoint.'/'.$id, [], 'delete') ?? [];
+        return $this->getTransport()->request('/'.$endpoint.'/'.$id, $data, 'delete') ?? [];
     }
 }
