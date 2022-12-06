@@ -109,7 +109,11 @@ class Transport implements TransportInterface
 
         $exception = new ApiException(
             $response,
-            $response['message'] ?? $rawResponse ?? 'Unknown error message',
+            sprintf(
+                'The request ended on a %s code : %s',
+                $httpStatusCode,
+                $this->arrayGet($response, $this->getErrorKey()) ?? $rawResponse ?? 'Unknown error message'
+            ),
             $httpStatusCode
         );
 
@@ -118,6 +122,11 @@ class Transport implements TransportInterface
         }
 
         throw $exception;
+    }
+
+    public function getErrorKey(): string
+    {
+        return 'message';
     }
 
     /**
@@ -234,5 +243,16 @@ class Transport implements TransportInterface
     public function getResponseHeaders(): array
     {
         return iterator_to_array($this->getClient()->getResponseHeaders());
+    }
+
+    protected function arrayGet(array $array, string $key)
+    {
+        $exploded = explode('.', $key, 2);
+
+        if (!isset($exploded[1])) {
+            return $array[$key];
+        }
+
+        return $this->arrayGet($array[$exploded[0]], $exploded[1]);
     }
 }

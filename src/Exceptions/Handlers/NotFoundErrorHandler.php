@@ -18,6 +18,7 @@ class NotFoundErrorHandler extends AbstractErrorHandler
     {
         throw new ApiEntityNotFoundException(
             $exception->getResponse(),
+            $exception->getMessage(),
             $exception->getCode(),
             $exception->getPrevious()
         );
