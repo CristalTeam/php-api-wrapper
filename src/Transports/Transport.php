@@ -250,7 +250,7 @@ class Transport implements TransportInterface
         $exploded = explode('.', $key, 2);
 
         if (!isset($exploded[1])) {
-            return $array[$key];
+            return $array[$key] ?? null;
         }
 
         return $this->arrayGet($array[$exploded[0]], $exploded[1]);
