@@ -112,7 +112,7 @@ class Transport implements TransportInterface
             sprintf(
                 'The request ended on a %s code : %s',
                 $httpStatusCode,
-                $this->arrayGet($response, $this->getErrorKey()) ?? $rawResponse ?? 'Unknown error message'
+                $this->arrayGet($response ?? [], $this->getErrorKey()) ?? $rawResponse ?? 'Unknown error message'
             ),
             $httpStatusCode
         );
