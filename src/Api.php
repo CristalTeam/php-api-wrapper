@@ -54,7 +54,8 @@ class Api
 
         preg_match('/^(get|create|update|delete)([\w\-_\/]+?)$/', $name, $matches);
 
-        $endpoint = strtolower($matches[2]);
+        $endpoint = lcfirst($matches[2]);
+
         if ('get' === $matches[1]) {
             if (array_key_exists(0, $arguments) && !is_array($arguments[0])) {
                 return $this->findOne($endpoint, ...$arguments);
