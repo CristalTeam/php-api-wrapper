@@ -152,6 +152,10 @@ class Transport implements TransportInterface
                 $url = $this->getUrl($endpoint);
                 $this->getClient()->put($url, $this->encodeBody($data));
                 break;
+            case 'patch':
+                $url = $this->getUrl($endpoint);
+                $this->getClient()->patch($url, $this->encodeBody($data));
+                break;
             case 'delete':
                 $url = $this->getUrl($endpoint);
                 $this->getClient()->delete($url, $data);
