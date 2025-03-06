@@ -27,11 +27,13 @@ class HasMany extends CoreHasMany
         $this->addConstraints();
     }
 
+    #[\Override]
     public function getRelationsFromArray($data)
     {
         return new Collection(parent::getRelationsFromArray($data));
     }
 
+    #[\Override]
     public function getResults()
     {
         return new Collection(parent::getResults());

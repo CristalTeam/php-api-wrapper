@@ -9,6 +9,7 @@ class HasOne extends HasMany
      *
      * @return mixed
      */
+    #[\Override]
     public function getResults()
     {
         if (!$this->queryValue) {
@@ -25,9 +26,10 @@ class HasOne extends HasMany
      *
      * @return mixed
      */
+    #[\Override]
     public function getRelationsFromArray($data)
     {
-        $class = get_class($this->related);
+        $class = $this->related::class;
 
         return new $class($data, isset($data[$this->localKey]));
     }

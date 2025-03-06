@@ -6,16 +6,11 @@ use Cristal\ApiWrapper\Model;
 
 class BelongsTo extends Relation
 {
-    protected $foreignKey;
-    protected $localKey;
-
-    public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
+    public function __construct(Model $parent, Model $related, protected $foreignKey, protected $localKey)
     {
         parent::__construct($parent);
         $this->parent = $parent;
         $this->related = $related;
-        $this->foreignKey = $foreignKey;
-        $this->localKey = $localKey;
 
         $this->addConstraints();
     }
@@ -25,6 +20,7 @@ class BelongsTo extends Relation
      *
      * @return mixed
      */
+    #[\Override]
     public function getResults()
     {
         if (!($queryValue = $this->parent->{$this->foreignKey})) {
@@ -53,7 +49,7 @@ class BelongsTo extends Relation
      */
     public function getRelationsFromArray($data)
     {
-        $class = get_class($this->related);
+        $class = $this->related::class;
 
         return new $class($data, isset($data[$this->localKey]));
     }

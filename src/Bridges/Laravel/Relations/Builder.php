@@ -10,6 +10,7 @@ class Builder extends CoreBuilder
     /**
      * @return array|CoreBuilder[]
      */
+    #[\Override]
     public function get()
     {
         return collect(parent::get());
@@ -22,6 +23,7 @@ class Builder extends CoreBuilder
      * @param null $page
      * @return LengthAwarePaginator
      */
+    #[\Override]
     public function paginate(?int $perPage = null, ?int $page = 1)
     {
         $entities = parent::paginate($perPage, $page);
@@ -38,6 +40,7 @@ class Builder extends CoreBuilder
      * @param $data
      * @return array|null
      */
+    #[\Override]
     public function instanciateModels($data)
     {
         return parent::instanciateModels($data['hydra:member'] ?? $data['data'] ?? $data ?? null);

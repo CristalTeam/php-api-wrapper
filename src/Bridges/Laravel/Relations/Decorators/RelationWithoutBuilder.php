@@ -11,6 +11,7 @@ class RelationWithoutBuilder extends CoreRelationWithoutBuilder
     /**
      * {@inheritdoc}
      */
+    #[\Override]
     public function getResults()
     {
         return $this->relation instanceof HasMany ? new Collection() : null;

@@ -87,7 +87,7 @@ class Builder
 
         try {
             $res = $this->findOrFail($field, $value);
-        } catch (ApiEntityNotFoundException $e) {
+        } catch (ApiEntityNotFoundException) {
             return null;
         }
 
@@ -106,7 +106,7 @@ class Builder
             return $this->where($this->query)->get()[0] ?? null;
         }
 
-        $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->getQuery());
+        $data = $this->model->getApi()->{'get'.ucfirst((string) $this->model->getEntity())}($field, $this->getQuery());
 
         return $this->model->newInstance($data, true);
     }
@@ -261,7 +261,7 @@ class Builder
         $instance = $this->getModel();
         try {
             return $instance->getApi()->{'get'.ucfirst($instance->getEntities())}($this->getQuery());
-        } catch (ApiEntityNotFoundException $e) {
+        } catch (ApiEntityNotFoundException) {
             return [];
         }
     }
@@ -272,9 +272,7 @@ class Builder
             return null;
         }
 
-        return array_map(function ($entity) {
-            return $this->model->newInstance($entity, true);
-        }, $data);
+        return array_map(fn($entity) => $this->model->newInstance($entity, true), $data);
     }
 
     public function paginate(?int $perPage = null, ?int $page = 1)
