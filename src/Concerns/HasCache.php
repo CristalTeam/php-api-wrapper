@@ -40,7 +40,7 @@ trait HasCache
      */
     protected function getCache($key)
     {
-        return isset(static::$cache[$key]) ? static::$cache[$key] : null;
+        return static::$cache[$key] ?? null;
     }
 
     /**

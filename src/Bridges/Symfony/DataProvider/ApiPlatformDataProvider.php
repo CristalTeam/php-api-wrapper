@@ -10,24 +10,18 @@ use Cristal\ApiWrapper\Bridges\Symfony\ClassMetadata;
 use Cristal\ApiWrapper\Bridges\Symfony\ManagerRegistry;
 use Cristal\ApiWrapper\Bridges\Symfony\PaginatorInterface;
 
-final class ApiPlatformDataProvider implements ItemDataProviderInterface, CollectionDataProviderInterface, RestrictedDataProviderInterface
+final readonly class ApiPlatformDataProvider implements ItemDataProviderInterface, CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $managerRegistry;
-
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(private ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    public function supports(string $resourceClass, ?string $operationName = null, array $context = []): bool
     {
         return $this->managerRegistry->getMetadataFromClass($resourceClass) instanceof ClassMetadata;
     }
 
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getCollection(string $resourceClass, ?string $operationName = null, array $context = [])
     {
         $allowedFilters = $this->managerRegistry->getMetadataFromClass($resourceClass)->getAllowedFilters();
 
@@ -53,7 +47,7 @@ final class ApiPlatformDataProvider implements ItemDataProviderInterface, Collec
     /**
      * @inheritDoc
      */
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
+    public function getItem(string $resourceClass, $id, ?string $operationName = null, array $context = [])
     {
         return $this->managerRegistry
             ->getRepository($resourceClass)

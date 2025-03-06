@@ -2,16 +2,16 @@
 
 namespace Cristal\ApiWrapper;
 
-use ArrayAccess;
 use Closure;
+use Exception;
+use ArrayAccess;
+use JsonSerializable;
 use Cristal\ApiWrapper\Concerns\HasAttributes;
-use Cristal\ApiWrapper\Concerns\HasRelationships;
+use Cristal\ApiWrapper\Exceptions\ApiException;
 use Cristal\ApiWrapper\Concerns\HasGlobalScopes;
 use Cristal\ApiWrapper\Concerns\HidesAttributes;
-use Cristal\ApiWrapper\Exceptions\ApiException;
+use Cristal\ApiWrapper\Concerns\HasRelationships;
 use Cristal\ApiWrapper\Exceptions\MissingApiException;
-use Exception;
-use JsonSerializable;
 
 abstract class Model implements ArrayAccess, JsonSerializable
 {
@@ -184,7 +184,8 @@ abstract class Model implements ArrayAccess, JsonSerializable
         // start_measure('fill-model', 'Création de l\'objet '.static::class);
         foreach ($attributes as $key => $value) {
             if (is_array($value) && method_exists($this, $key)) {
-                $this->setRelation($key,
+                $this->setRelation(
+                    $key,
                     $this->$key()->getRelationsFromArray($value)
                 );
             } else {
@@ -318,7 +319,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }
@@ -330,7 +331,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return !is_null($this->getAttribute($offset));
     }
@@ -342,7 +343,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->getAttribute($offset);
     }
@@ -355,7 +356,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->setAttribute($offset, $value);
     }
@@ -367,7 +368,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->attributes[$offset]);
     }

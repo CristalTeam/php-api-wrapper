@@ -70,6 +70,7 @@ class OAuth2 extends TransportCore
      * @return mixed|null
      * @throws IdentityProviderException
      */
+    #[\Override]
     public function rawRequest($endpoint, array $data = [], $method = 'get')
     {
         $this->getClient()->setHeader('Authorization', 'Bearer '.$this->getToken());

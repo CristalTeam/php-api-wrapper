@@ -19,18 +19,12 @@ class ClassMetadata extends SerializerClassMetadata
      */
     private $entityAnnotation;
 
-    /**
-     * @var Reader
-     */
-    private $reader;
-
     public function __construct(
         string $class,
-        ClassDiscriminatorMapping $classDiscriminatorMapping = null,
-        Reader $reader = null
+        ?ClassDiscriminatorMapping $classDiscriminatorMapping = null,
+        private readonly Reader $reader = new AnnotationReader()
     ) {
         parent::__construct($class, $classDiscriminatorMapping);
-        $this->reader = $reader ?? new AnnotationReader();
     }
 
     public function getRepositoryClass(): string

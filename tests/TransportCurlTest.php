@@ -148,7 +148,7 @@ class TransportCurlTest extends TestCase
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('get')->andReturnUsing(static function () use ($client) {
+        $this->client->shouldReceive('get')->andReturnUsing(static function () use ($client): void {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
@@ -162,7 +162,7 @@ class TransportCurlTest extends TestCase
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('post')->andReturnUsing(static function () use ($client) {
+        $this->client->shouldReceive('post')->andReturnUsing(static function () use ($client): void {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
@@ -176,7 +176,7 @@ class TransportCurlTest extends TestCase
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('put')->andReturnUsing(static function () use ($client) {
+        $this->client->shouldReceive('put')->andReturnUsing(static function () use ($client): void {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
@@ -190,7 +190,7 @@ class TransportCurlTest extends TestCase
     {
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('delete')->andReturnUsing(static function () use ($client) {
+        $this->client->shouldReceive('delete')->andReturnUsing(static function () use ($client): void {
             $client->httpStatusCode = 200;
             $client->rawResponse = '{"success":true}';
         });
@@ -205,7 +205,7 @@ class TransportCurlTest extends TestCase
         $this->expectException(Exception::class);
         $curl = new Bearer($this->jwt, $this->entrypoint, $this->client);
         $client = $this->client;
-        $this->client->shouldReceive('foo')->andReturnUsing(static function () use ($client) {
+        $this->client->shouldReceive('foo')->andReturnUsing(static function () use ($client): void {
             $client->httpStatusCode = 200;
         });
         $curl->request('/some-endpoint', [], 'foo');
