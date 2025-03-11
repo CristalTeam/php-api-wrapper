@@ -28,7 +28,7 @@ class ApiTest extends TestCase
         return $transport;
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->token = 'token_jwt';
         $this->entrypoint = 'https://exemple/api/';
