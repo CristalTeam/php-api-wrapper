@@ -9,7 +9,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Cristal\ApiWrapper\Transports\Bearer;
 
-class TransportCurlTest extends TestCase
+final class TransportCurlTest extends TestCase
 {
     /**
      * @var string
