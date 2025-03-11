@@ -110,33 +110,18 @@ trait HasAttributes
             return $value;
         }
 
-        switch ($this->getCastType($key)) {
-            case 'int':
-            case 'integer':
-                return (int) $value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float) $value;
-            case 'string':
-                return (string) $value;
-            case 'bool':
-            case 'boolean':
-                return (bool) $value;
-            case 'object':
-                return $this->fromJson($value, true);
-            case 'array':
-            case 'json':
-                return $this->fromJson($value);
-            case 'date':
-                return $this->asDate($value);
-            case 'datetime':
-                return $this->asDateTime($value);
-            case 'timestamp':
-                return $this->asTimestamp($value);
-            default:
-                return $this->asModel($key, $value) ?? $value;
-        }
+        return match ($this->getCastType($key)) {
+            'int', 'integer' => (int) $value,
+            'real', 'float', 'double' => (float) $value,
+            'string' => (string) $value,
+            'bool', 'boolean' => (bool) $value,
+            'object' => $this->fromJson($value, true),
+            'array', 'json' => $this->fromJson($value),
+            'date' => $this->asDate($value),
+            'datetime' => $this->asDateTime($value),
+            'timestamp' => $this->asTimestamp($value),
+            default => $this->asModel($key, $value) ?? $value,
+        };
     }
 
     /**
@@ -148,7 +133,7 @@ trait HasAttributes
      */
     protected function getCastType($key)
     {
-        return trim(strtolower($this->getCasts()[$key]));
+        return trim(strtolower((string) $this->getCasts()[$key]));
     }
 
     /**
@@ -288,7 +273,7 @@ trait HasAttributes
         $relation = $this->$method();
 
         if (!$relation instanceof RelationInterface) {
-            throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
+            throw new LogicException($this::class.'::'.$method.' must return a relationship instance.');
         }
 
         $results = $relation->getResults();
@@ -318,11 +303,7 @@ trait HasAttributes
      */
     protected function getAttributeFromArray($key)
     {
-        if (isset($this->attributes[$key])) {
-            return $this->attributes[$key];
-        }
-
-        return null;
+        return $this->attributes[$key] ?? null;
     }
 
     /**
@@ -716,9 +697,7 @@ trait HasAttributes
      */
     public static function cacheMutatedAttributes($class)
     {
-        static::$mutatorCache[$class] = array_map(function ($match) {
-            return lcfirst(self::studly($match));
-        }, static::getMutatorMethods($class));
+        static::$mutatorCache[$class] = array_map(fn($match) => lcfirst(self::studly($match)), static::getMutatorMethods($class));
     }
 
     /**

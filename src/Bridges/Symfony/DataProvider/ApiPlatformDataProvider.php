@@ -10,16 +10,10 @@ use Cristal\ApiWrapper\Bridges\Symfony\ClassMetadata;
 use Cristal\ApiWrapper\Bridges\Symfony\ManagerRegistry;
 use Cristal\ApiWrapper\Bridges\Symfony\PaginatorInterface;
 
-final class ApiPlatformDataProvider implements ItemDataProviderInterface, CollectionDataProviderInterface, RestrictedDataProviderInterface
+final readonly class ApiPlatformDataProvider implements ItemDataProviderInterface, CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    /**
-     * @var ManagerRegistry
-     */
-    private $managerRegistry;
-
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(private ManagerRegistry $managerRegistry)
     {
-        $this->managerRegistry = $managerRegistry;
     }
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool

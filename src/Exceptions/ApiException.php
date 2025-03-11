@@ -7,17 +7,14 @@ use Throwable;
 
 class ApiException extends Exception
 {
-    protected $response;
-
     /**
      * @var string|null Can be used to specify from which API the exception has been thrown.
      */
     protected $source;
 
-    public function __construct($response, $message = "", $httpCode = 0, Throwable $previous = null)
+    public function __construct(protected $response, $message = "", $httpCode = 0, Throwable $previous = null)
     {
         parent::__construct($message, $httpCode, $previous);
-        $this->response = $response;
     }
 
     /**

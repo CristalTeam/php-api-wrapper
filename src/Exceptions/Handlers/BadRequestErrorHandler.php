@@ -14,7 +14,7 @@ class BadRequestErrorHandler extends AbstractErrorHandler
     /**
      * {@inheritdoc}
      */
-    public function handle(ApiException $exception, array $requestArguments)
+    public function handle(ApiException $exception, array $requestArguments): never
     {
         throw new ApiBadRequestException(
             $exception->getResponse(),

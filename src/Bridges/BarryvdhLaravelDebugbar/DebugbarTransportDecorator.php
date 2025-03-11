@@ -18,16 +18,6 @@ class DebugbarTransportDecorator implements TransportInterface
     const DEBUG_COLLECTOR = 'api';
 
     /**
-     * @var TransportInterface
-     */
-    private $transport;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
      * @var LaravelDebugbar
      */
     private $debugbar;
@@ -39,10 +29,8 @@ class DebugbarTransportDecorator implements TransportInterface
      * @param string             $name
      * @param LaravelDebugbar    $debugbar
      */
-    public function __construct(TransportInterface $transport, string $name, ?LaravelDebugbar $debugbar)
+    public function __construct(private readonly TransportInterface $transport, private readonly string $name, ?LaravelDebugbar $debugbar)
     {
-        $this->transport = $transport;
-        $this->name = $name;
         $this->debugbar = $debugbar;
     }
 
@@ -166,7 +154,7 @@ class DebugbarTransportDecorator implements TransportInterface
                     '[%s] %s[%s]',
                     $method,
                     $endpoint,
-                    $this->formatDuration(microtime(true) - $start)
+                    static::formatDuration(microtime(true) - $start)
                 )
             );
 

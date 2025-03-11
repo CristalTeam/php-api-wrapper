@@ -13,7 +13,7 @@ use Cristal\ApiWrapper\Exceptions\MissingApiException;
 use Exception;
 use JsonSerializable;
 
-abstract class Model implements ArrayAccess, JsonSerializable
+abstract class Model implements ArrayAccess, JsonSerializable, \Stringable
 {
     use HasAttributes;
     use HasRelationships;
@@ -47,13 +47,6 @@ abstract class Model implements ArrayAccess, JsonSerializable
      * @var string api
      */
     protected static $api = 'default';
-
-    /**
-     * Indicates if the model exists.
-     *
-     * @var bool
-     */
-    public $exists = false;
 
     /**
      * The array of global scopes on the model.
@@ -116,16 +109,21 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     public function getEntities(): string
     {
-        if (substr($this->entity, -1) === 'y') {
+        if (str_ends_with($this->entity, 'y')) {
             return rtrim($this->entity, 'y').'ies';
         }
 
         return rtrim($this->entity, 's').'s';
     }
 
-    public function __construct($fill = [], $exists = false)
+    /**
+     * @param bool $exists
+     */
+    public function __construct($fill = [], /**
+     * Indicates if the model exists.
+     */
+    public $exists = false)
     {
-        $this->exists = $exists;
         $this->fill($fill);
         $this->syncOriginal();
         $this->boot();
@@ -278,7 +276,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      *
      * @throws \Exception
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toJson();
     }
@@ -564,7 +562,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
         $dirty = $this->getDirty();
 
         if (count($dirty) > 0) {
-            $updatedField = $this->getApi()->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
+            $updatedField = $this->getApi()->{'update'.ucfirst((string) $this->getEntity())}($this->{$this->primaryKey}, $dirty);
             $this->fill($updatedField);
             $this->syncChanges();
         }
@@ -580,7 +578,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
     protected function performInsert()
     {
         $attributes = $this->getAttributes();
-        $updatedField = $this->getApi()->{'create'.ucfirst($this->getEntity())}($attributes);
+        $updatedField = $this->getApi()->{'create'.ucfirst((string) $this->getEntity())}($attributes);
         $this->fill($updatedField);
         $this->exists = true;
         $this->wasRecentlyCreated = true;
@@ -595,7 +593,7 @@ abstract class Model implements ArrayAccess, JsonSerializable
      */
     protected function performDeleteOnModel()
     {
-        $this->getApi()->{'delete'.ucfirst($this->getEntity())}(
+        $this->getApi()->{'delete'.ucfirst((string) $this->getEntity())}(
             $this->{$this->primaryKey},
             array_merge(...array_values($this->getGlobalScopes()))
         );
