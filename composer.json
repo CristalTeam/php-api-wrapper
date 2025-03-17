@@ -1,35 +1,35 @@
 {
-  "name": "cristal/php-api-wrapper",
-  "description": "Work with APIs like with Laravel Eloquent or Doctrine (no longer a dream)",
-  "type": "package",
-  "authors": [
-    {
-      "name": "Cristal",
-      "email": "cristal@cpro.fr"
+    "name": "cristal/php-api-wrapper",
+    "description": "Work with APIs like with Laravel Eloquent or Doctrine (no longer a dream)",
+    "type": "package",
+    "authors": [
+        {
+            "name": "Cristal",
+            "email": "cristal@cpro.fr"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "php-curl-class/php-curl-class": "^8.3",
+        "psr/cache": "^1.0 || ^2.0 || ^3.0"
+    },
+    "suggest": {
+        "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
+        "laravel/framework": "To integrate Laravel Collection, Pagination and Eloquent relations with your models.",
+        "symfony/symfony": "To integrate a ManagerRegistry, a Paginator and support serialization with your entities.",
+        "api-platform/core": "To integrate a DataProvider and support the Paginator of the Api Platform in addition to the support of Symfony.",
+        "league/oauth2-client": "To support OAuth2 request Transport."
+    },
+    "autoload": {
+        "psr-4": {
+            "Cristal\\ApiWrapper\\": "src"
+        }
+    },
+    "license": "MIT",
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "^1.4",
+        "symfony/var-dumper": "^5.1",
+        "rector/rector": "^2.0"
     }
-  ],
-  "require" : {
-    "php" : ">=8.2",
-    "php-curl-class/php-curl-class": "^8.3",
-    "psr/cache": "^1.0 || ^2.0 || ^3.0"
-  },
-  "suggest": {
-    "barryvdh/laravel-debugbar": "To support request tracking in your Laravel app.",
-    "laravel/framework":  "To integrate Laravel Collection, Pagination and Eloquent relations with your models.",
-    "symfony/symfony" : "To integrate a ManagerRegistry, a Paginator and support serialization with your entities.",
-    "api-platform/core" : "To integrate a DataProvider and support the Paginator of the Api Platform in addition to the support of Symfony.",
-    "league/oauth2-client" : "To support OAuth2 request Transport."
-  },
-  "autoload": {
-    "psr-4": {
-      "Cristal\\ApiWrapper\\": "src"
-    }
-  },
-  "license": "MIT",
-  "require-dev": {
-    "phpunit/phpunit": "^9.3",
-    "mockery/mockery": "^1.4",
-    "symfony/var-dumper": "^5.1",
-    "rector/rector": "^2.0"
-  }
 }
