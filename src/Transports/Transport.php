@@ -229,7 +229,7 @@ class Transport implements TransportInterface
                 $delimiter = '----WebKitFormBoundary'.uniqid('', true);
 
                 $this->getClient()->setHeader('Content-Type', 'multipart/form-data; boundary=' . $delimiter);
-                return join(array_map(function ($param, $name) use ($delimiter) {
+                return implode(array_map(function ($param, $name) use ($delimiter) {
                     if (!$param instanceof MultipartParam) {
                         $param = new MultipartParam($param);
                     }

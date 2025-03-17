@@ -166,7 +166,7 @@ class DebugbarTransportDecorator implements TransportInterface
                     '[%s] %s[%s]',
                     $method,
                     $endpoint,
-                    $this->formatDuration(microtime(true) - $start)
+                    static::formatDuration(microtime(true) - $start)
                 )
             );
 

@@ -85,7 +85,7 @@ trait HasApiRelations
             throw new LogicException(\get_class($this).'::'.$method.' must return a relationship instance.');
         }
 
-        return tap($relation->getResults(), function ($results) use ($method) {
+        return tap($relation->getResults(), function ($results) use ($method): void {
             $this->setRelation($method, $results);
         });
     }
