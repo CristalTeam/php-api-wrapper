@@ -6,17 +6,13 @@ use Cristal\ApiWrapper\Model;
 
 class HasMany extends Relation
 {
-    protected $foreignKey;
-    protected $localKey;
     protected $queryKey;
     protected $queryValue;
 
-    public function __construct(Model $parent, Model $related, $foreignKey, $localKey)
+    public function __construct(Model $parent, Model $related, protected $foreignKey, protected $localKey)
     {
         parent::__construct($parent);
         $this->related = $related;
-        $this->foreignKey = $foreignKey;
-        $this->localKey = $localKey;
 
         $this->addConstraints();
     }
@@ -43,7 +39,7 @@ class HasMany extends Relation
      */
     public function getRelationsFromArray($data)
     {
-        $class = get_class($this->related);
+        $class = $this->related::class;
 
         return array_map(fn($item) => new $class($item, isset($item[$this->localKey])), $data);
     }

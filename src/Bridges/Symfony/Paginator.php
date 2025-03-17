@@ -18,26 +18,13 @@ class Paginator implements PaginatorInterface
     private $data;
 
     /**
-     * @var float|null
+     * @param float|null $total
+     * @param float|null $itemPerPage
+     * @param float|null $currentPage
      */
-    private $total;
-
-    /**
-     * @var float|null
-     */
-    private $itemPerPage;
-
-    /**
-     * @var float|null
-     */
-    private $currentPage;
-
-    public function __construct($data, $total, $itemPerPage = null, $currentPage = null)
+    public function __construct($data, private $total, private $itemPerPage = null, private $currentPage = null)
     {
         $this->data = new \ArrayIterator($data);
-        $this->total = $total;
-        $this->itemPerPage = $itemPerPage;
-        $this->currentPage = $currentPage;
     }
 
     /**

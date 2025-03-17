@@ -87,7 +87,7 @@ class Builder
 
         try {
             $res = $this->findOrFail($field, $value);
-        } catch (ApiEntityNotFoundException $e) {
+        } catch (ApiEntityNotFoundException) {
             return null;
         }
 
@@ -261,7 +261,7 @@ class Builder
         $instance = $this->getModel();
         try {
             return $instance->getApi()->{'get'.ucfirst($instance->getEntities())}($this->getQuery());
-        } catch (ApiEntityNotFoundException $e) {
+        } catch (ApiEntityNotFoundException) {
             return [];
         }
     }

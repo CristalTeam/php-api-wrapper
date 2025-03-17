@@ -27,7 +27,7 @@ class HasOne extends HasMany
      */
     public function getRelationsFromArray($data)
     {
-        $class = get_class($this->related);
+        $class = $this->related::class;
 
         return new $class($data, isset($data[$this->localKey]));
     }
