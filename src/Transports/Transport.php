@@ -203,9 +203,7 @@ class Transport implements TransportInterface
             return null;
         }
 
-        $data = array_map(function ($item) {
-            return is_null($item) ? '' : $item;
-        }, $data);
+        $data = array_map(fn($item) => is_null($item) ? '' : $item, $data);
 
         return '?' . http_build_query($data);
     }
@@ -229,7 +227,7 @@ class Transport implements TransportInterface
                 $delimiter = '----WebKitFormBoundary'.uniqid('', true);
 
                 $this->getClient()->setHeader('Content-Type', 'multipart/form-data; boundary=' . $delimiter);
-                return implode(array_map(function ($param, $name) use ($delimiter) {
+                return implode('', array_map(function ($param, $name) use ($delimiter) {
                     if (!$param instanceof MultipartParam) {
                         $param = new MultipartParam($param);
                     }

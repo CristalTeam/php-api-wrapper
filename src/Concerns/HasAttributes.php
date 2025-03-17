@@ -712,9 +712,7 @@ trait HasAttributes
      */
     public static function cacheMutatedAttributes($class)
     {
-        static::$mutatorCache[$class] = array_map(function ($match) {
-            return lcfirst(self::studly($match));
-        }, static::getMutatorMethods($class));
+        static::$mutatorCache[$class] = array_map(fn($match) => lcfirst(self::studly($match)), static::getMutatorMethods($class));
     }
 
     /**

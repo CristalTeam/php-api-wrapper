@@ -45,9 +45,7 @@ class HasMany extends Relation
     {
         $class = get_class($this->related);
 
-        return array_map(function ($item) use ($class) {
-            return new $class($item, isset($item[$this->localKey]));
-        }, $data);
+        return array_map(fn($item) => new $class($item, isset($item[$this->localKey])), $data);
     }
 
     public function getResults()

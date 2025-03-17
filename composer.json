@@ -9,7 +9,7 @@
     }
   ],
   "require" : {
-    "php" : ">=7.4",
+    "php" : ">=8.0",
     "php-curl-class/php-curl-class": "^8.3",
     "psr/cache": "^1.0 || ^2.0 || ^3.0"
   },

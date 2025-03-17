@@ -272,9 +272,7 @@ class Builder
             return null;
         }
 
-        return array_map(function ($entity) {
-            return $this->model->newInstance($entity, true);
-        }, $data);
+        return array_map(fn($entity) => $this->model->newInstance($entity, true), $data);
     }
 
     public function paginate(?int $perPage = null, ?int $page = 1)

@@ -162,19 +162,15 @@ class Repository implements ObjectRepository
             return null;
         }
 
-        $denormalize = function ($data) {
-            return $this->denormalizer->denormalize(
-                $data,
-                $this->getClassName(),
-                $this->class->getFormat(),
-                [AbstractItemNormalizer::DISABLE_TYPE_ENFORCEMENT => null === $this->class->getFormat()]
-            );
-        };
+        $denormalize = (fn($data) => $this->denormalizer->denormalize(
+            $data,
+            $this->getClassName(),
+            $this->class->getFormat(),
+            [AbstractItemNormalizer::DISABLE_TYPE_ENFORCEMENT => null === $this->class->getFormat()]
+        ));
 
         if ($multiple) {
-            return array_map(static function ($entity) use ($denormalize) {
-                return $denormalize($entity);
-            }, $data);
+            return array_map(static fn($entity) => $denormalize($entity), $data);
         }
 
         return $denormalize($data);
