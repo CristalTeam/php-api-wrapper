@@ -72,7 +72,7 @@ class Repository implements ObjectRepository
     public function find($id)
     {
         return $this->instanciateEntity(
-            $this->getApi()->{'get' . ucfirst($this->class->getEntity())}($id)
+            $this->getApi()->{'get' . ucfirst((string) $this->class->getEntity())}($id)
         );
     }
 
@@ -96,7 +96,7 @@ class Repository implements ObjectRepository
         $criteria[static::CRITERIA_LIMIT] = $limit ?? static::DEFAULT_LIMIT;
         $criteria[static::CRITERIA_PAGE] = $page ?? 1;
 
-        $results = $this->getApi()->{'get' . ucfirst($this->class->getEntities())}(
+        $results = $this->getApi()->{'get' . ucfirst((string) $this->class->getEntities())}(
             $this->filterCriteria($criteria)
         );
 

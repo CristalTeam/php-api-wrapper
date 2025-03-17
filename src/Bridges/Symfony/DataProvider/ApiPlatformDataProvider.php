@@ -12,7 +12,7 @@ use Cristal\ApiWrapper\Bridges\Symfony\PaginatorInterface;
 
 final class ApiPlatformDataProvider implements ItemDataProviderInterface, CollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    public function __construct(private ManagerRegistry $managerRegistry)
+    public function __construct(private readonly ManagerRegistry $managerRegistry)
     {
     }
 

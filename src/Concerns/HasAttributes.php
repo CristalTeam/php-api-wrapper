@@ -133,7 +133,7 @@ trait HasAttributes
      */
     protected function getCastType($key)
     {
-        return trim(strtolower($this->getCasts()[$key]));
+        return trim(strtolower((string) $this->getCasts()[$key]));
     }
 
     /**

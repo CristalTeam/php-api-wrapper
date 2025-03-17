@@ -562,7 +562,7 @@ abstract class Model implements ArrayAccess, JsonSerializable, \Stringable
         $dirty = $this->getDirty();
 
         if (count($dirty) > 0) {
-            $updatedField = $this->getApi()->{'update'.ucfirst($this->getEntity())}($this->{$this->primaryKey}, $dirty);
+            $updatedField = $this->getApi()->{'update'.ucfirst((string) $this->getEntity())}($this->{$this->primaryKey}, $dirty);
             $this->fill($updatedField);
             $this->syncChanges();
         }
@@ -578,7 +578,7 @@ abstract class Model implements ArrayAccess, JsonSerializable, \Stringable
     protected function performInsert()
     {
         $attributes = $this->getAttributes();
-        $updatedField = $this->getApi()->{'create'.ucfirst($this->getEntity())}($attributes);
+        $updatedField = $this->getApi()->{'create'.ucfirst((string) $this->getEntity())}($attributes);
         $this->fill($updatedField);
         $this->exists = true;
         $this->wasRecentlyCreated = true;
@@ -593,7 +593,7 @@ abstract class Model implements ArrayAccess, JsonSerializable, \Stringable
      */
     protected function performDeleteOnModel()
     {
-        $this->getApi()->{'delete'.ucfirst($this->getEntity())}(
+        $this->getApi()->{'delete'.ucfirst((string) $this->getEntity())}(
             $this->{$this->primaryKey},
             array_merge(...array_values($this->getGlobalScopes()))
         );

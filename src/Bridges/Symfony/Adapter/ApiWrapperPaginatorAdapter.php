@@ -7,7 +7,7 @@ use Cristal\ApiWrapper\Bridges\Symfony\PaginatorInterface;
 
 class ApiWrapperPaginatorAdapter implements \IteratorAggregate, ApiPlatformPaginator
 {
-    public function __construct(private PaginatorInterface $paginator)
+    public function __construct(private readonly PaginatorInterface $paginator)
     {
     }
 

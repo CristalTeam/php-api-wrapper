@@ -14,7 +14,7 @@ class UnauthorizedErrorHandler extends AbstractErrorHandler
     /**
      * {@inheritdoc}
      */
-    public function handle(ApiException $exception, array $requestArguments)
+    public function handle(ApiException $exception, array $requestArguments): never
     {
         throw new ApiUnauthorizedException(
             $exception->getResponse(),

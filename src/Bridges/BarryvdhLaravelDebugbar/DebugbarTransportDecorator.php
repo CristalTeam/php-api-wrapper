@@ -29,7 +29,7 @@ class DebugbarTransportDecorator implements TransportInterface
      * @param string             $name
      * @param LaravelDebugbar    $debugbar
      */
-    public function __construct(private TransportInterface $transport, private string $name, ?LaravelDebugbar $debugbar)
+    public function __construct(private readonly TransportInterface $transport, private readonly string $name, ?LaravelDebugbar $debugbar)
     {
         $this->debugbar = $debugbar;
     }

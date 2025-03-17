@@ -106,7 +106,7 @@ class Builder
             return $this->where($this->query)->get()[0] ?? null;
         }
 
-        $data = $this->model->getApi()->{'get'.ucfirst($this->model->getEntity())}($field, $this->getQuery());
+        $data = $this->model->getApi()->{'get'.ucfirst((string) $this->model->getEntity())}($field, $this->getQuery());
 
         return $this->model->newInstance($data, true);
     }
