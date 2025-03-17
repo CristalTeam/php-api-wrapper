@@ -8,7 +8,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
-class ApiTest extends TestCase
+final class ApiTest extends TestCase
 {
     protected const ENDPOINTS = ['client', 'catalogue', 'materiel', 'fabricant', 'type', 'tarif', 'caracteristique'];
     protected $token;
