@@ -73,6 +73,11 @@ class OAuth2 extends TransportCore
     public function rawRequest($endpoint, array $data = [], $method = 'get')
     {
         $this->getClient()->setHeader('Authorization', 'Bearer '.$this->getToken());
+
+        foreach($this->provider->getHeaders() as $name => $value) {
+            $this->getClient()->setHeader($name, $value);
+        }
+
         return parent::rawRequest($endpoint, $data, $method);
     }
 
