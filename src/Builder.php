@@ -3,6 +3,7 @@
 namespace  Cristal\ApiWrapper;
 
 use Cristal\ApiWrapper\Exceptions\ApiEntityNotFoundException;
+use http\Exception\InvalidArgumentException;
 
 class Builder
 {
@@ -51,6 +52,15 @@ class Builder
      * @var array
      */
     protected $removedScopes = [];
+
+    /**
+     * All of the available clause operators.
+     *
+     * @var string[]
+     */
+    public $operators = [
+        '=', '<', '>', '<=', '>=', '<>', '!=', '<=>',
+    ];
 
     /**
      * Set a model instance for the model being queried.
@@ -114,20 +124,97 @@ class Builder
     /**
      * Add a basic where clause to the query.
      *
-     * @param      $field
-     * @param null $value
+     * @param string|array $column
+     * @param mixed $operator
+     * @param mixed $value
      *
-     * @return self
+     * @return $this
      */
-    public function where($field, $value = null)
+    public function where($column, $operator = null, $value = null)
     {
-        if (!is_array($field)) {
-            $field = [$field => $value];
+        if (is_array($column)) {
+            return $this->addArrayOfWheres($column);
         }
 
-        $this->query = array_merge($this->query, $field);
+        [$value, $operator] = $this->prepareValueAndOperator(
+            $value, $operator, func_num_args() === 2
+        );
+
+        if ($this->invalidOperator($operator)) {
+            [$value, $operator] = [$operator, '='];
+        }
+
+        $this->query[] = [$column, $operator, $value];
 
         return $this;
+    }
+
+    /**
+     * Add an array of where clauses to the query.
+     *
+     * @param $column
+     * @return $this
+     */
+    protected function addArrayOfWheres($column)
+    {
+        $q = [];
+        foreach ($column as $key => $value) {
+            if (is_numeric($key) && is_array($value)) {
+                $q[] = $value;
+            } else {
+                $q[] = [$key, '=', $value];
+            }
+        }
+
+        $this->query = array_merge($this->query, $q);
+
+        return $this;
+    }
+
+    /**
+     * Prepare the value and operator for a where clause.
+     *
+     * @param $value
+     * @param $operator
+     * @param false $useDefault
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function prepareValueAndOperator($value, $operator, $useDefault = false)
+    {
+        if ($useDefault) {
+            return [$operator, '='];
+        }
+
+        if ($this->invalidOperatorAndValue($operator, $value)) {
+            throw new InvalidArgumentException('Illegal operator and value combination');
+        }
+
+        return [$value, $operator];
+    }
+
+    /**
+     * Determine if the given operator and value combination is legal.
+     *
+     * @param $operator
+     * @param $value
+     * @return bool
+     */
+    protected function invalidOperatorAndValue($operator, $value)
+    {
+        return is_null($value) && in_array($operator, $this->operators, true);
+    }
+
+    /**
+     * Determine if the given operator is supported.
+     *
+     * @param $operator
+     * @return bool
+     */
+    protected function invalidOperator($operator)
+    {
+        return ! in_array(strtolower($operator), $this->operators, true);
     }
 
     /**
