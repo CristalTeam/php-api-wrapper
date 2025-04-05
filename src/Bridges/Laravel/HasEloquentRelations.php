@@ -5,10 +5,12 @@ namespace Cristal\ApiWrapper\Bridges\Laravel;
 use Cristal\ApiWrapper\Relations\RelationInterface;
 use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasOne as BridgeHasOne;
 use Cristal\ApiWrapper\Bridges\Laravel\Relations\HasMany as BridgeHasMany;
+use Cristal\ApiWrapper\Bridges\Laravel\Relations\BelongsTo as BridgeBelongsTo;
 use Cristal\ApiWrapper\Bridges\Laravel\Relations\Builder as BridgeBuilder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use LogicException;
 
@@ -58,6 +60,21 @@ trait HasEloquentRelations
         }
 
         return new BridgeHasOne($this, $instance, $foreignKey, $localKey);
+    }
+
+
+    public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relationName = null)
+    {
+        $parent = $this->newRelatedInstance($related);
+
+        $foreignKey = $foreignKey ?: $parent->getForeignKey();
+        $ownerKey = $ownerKey ?: $parent->getKeyName();
+
+        if ($parent instanceof Eloquent) {
+            return new BelongsTo($parent->newQuery(), $this->createFakeEloquentModel(), $foreignKey, $ownerKey, $relationName);
+        }
+
+        return new BridgeBelongsTo($parent, $this, $foreignKey, $ownerKey);
     }
 
     /**
